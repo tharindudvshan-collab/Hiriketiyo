@@ -65,12 +65,13 @@ const BUCKET="site-images", MAXW=2560;
 // slot name must match <img data-slot="..."> in index.html
 const SLOTS=[["hero","Hero background"],["bay","A horseshoe bay"],["svc-surf","Service: Surf"],["svc-stay","Service: Stay"],["svc-food","Service: Food"],["svc-ride","Service: Ride"],["svc-exp","Service: Experiences"],["svc-shop","Service: Shop"]];
 
+if(!window.supabase){document.querySelector("#lerr").textContent="Could not load the Supabase library. Check your internet connection and reload."}
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 const $=s=>document.querySelector(s);
 let rows={};
 
-sb.auth.getSession().then(({data})=>show(data.session));
-sb.auth.onAuthStateChange((_e,s)=>show(s));
+// setTimeout avoids a known supabase-js deadlock when calling the API inside this callback
+sb.auth.onAuthStateChange((_e,s)=>setTimeout(()=>show(s),0));
 $("#lf").onsubmit=async e=>{e.preventDefault();$("#lerr").textContent="";
   const{error}=await sb.auth.signInWithPassword({email:$("#em").value.trim(),password:$("#pw").value});
   if(error)$("#lerr").textContent="Sign in failed. Check your email and password.";};
@@ -79,7 +80,9 @@ $("#out").onclick=()=>sb.auth.signOut();
 async function show(s){
   $("#login").style.display=s?"none":"";$("#app").style.display=s?"block":"none";
   if(!s)return;
-  const{data}=await sb.from("site_images").select("*");
+  build(); // show the slots straight away, then fill in saved images
+  const{data,error}=await sb.from("site_images").select("*");
+  if(error)alert("Could not load images: "+error.message+"\nRun the Supabase SQL (site_images table) first.");
   rows=Object.fromEntries((data||[]).map(r=>[r.slot,r]));build();
 }
 
