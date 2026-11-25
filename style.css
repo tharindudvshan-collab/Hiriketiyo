@@ -184,3 +184,10 @@ header .mobnav.open{visibility:visible;opacity:1;transform:none;transition:trans
 .svc .btn span{display:inline-block;transition:transform .3s}.svc .btn:hover span{transform:translateX(4px)}
 @keyframes pop{from{opacity:0;transform:translateY(18px) scale(.97)}}
 @media(prefers-reduced-motion:reduce){.svc,.svc img,.svc .ic{animation:none;transition:none}}
+
+/* ===== live data layer (listings, checkout, banner) ===== */
+.lcard{display:flex;flex-direction:column;gap:.5rem}.lcard .btn{margin-top:auto;cursor:pointer;background:none}.lcard .lim{aspect-ratio:16/10;object-fit:cover;margin:-1.5rem -1.5rem .5rem;width:calc(100% + 3rem);max-width:none}.lp b{color:var(--txt)}
+#banner{display:none;position:sticky;top:0;z-index:60;padding:.8rem 1rem;text-align:center;font:600 .85rem var(--sans)}#banner.on{display:block}#banner.ok{background:#d1fadf;color:#05603a}#banner.no{background:#fee4e2;color:#912018}
+dialog#co{border:1px solid var(--line);background:var(--card);color:var(--txt);padding:0;max-width:480px;width:calc(100% - 2rem);max-height:92vh;overflow:auto}dialog#co::backdrop{background:#04303d99}
+dialog#co form{padding:1.5rem;max-width:none}dialog#co h3{margin:0}.sum{background:var(--bg);padding:.8rem 1rem;font-size:.9rem}.sum div{display:flex;justify-content:space-between}.sum .t{font-weight:700;border-top:1px solid var(--line);margin-top:.4rem;padding-top:.4rem}
+dialog#co .row{display:flex;gap:.8rem;flex-wrap:wrap}dialog#co .btn{cursor:pointer;background:none}[hidden]{display:none!important}

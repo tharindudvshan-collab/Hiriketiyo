@@ -9,7 +9,7 @@ document.getElementById('mob').classList.remove('open');document.querySelector('
 addEventListener('hashchange',route);route();
 const S={surf:['Surf lesson','Browse surf partners','#surf'],stay:['A stay by the bay','Browse stays','#stay'],food:['Local food','Browse food &amp; drink','#stay'],ride:['Coastal tuk-tuk trip','Request a quote','#transport']};
 document.getElementById('chips').addEventListener('change',()=>{const v=[...document.querySelectorAll('#chips input:checked')].map(i=>i.value);document.getElementById('plan').innerHTML=v.map(k=>`<div class="card"><h3>${S[k][0]}</h3><a href="${S[k][2]}">${S[k][1]}</a></div>`).join('')});
-document.querySelectorAll('form').forEach(f=>f.addEventListener('submit',e=>{e.preventDefault();const m=f.querySelector('.msg');m.textContent=f.dataset.kind+' checked, but not sent. Bookings need the database and email service to be connected first.';m.classList.add('show')}));
+document.querySelectorAll('form').forEach(f=>f.addEventListener('submit',e=>{if(f.dataset.live)return;e.preventDefault();const m=f.querySelector('.msg');m.textContent=f.dataset.kind+' checked, but not sent. Bookings need the database and email service to be connected first.';m.classList.add('show')}));
 
 // Offline support (service worker works on https or localhost)
 if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
