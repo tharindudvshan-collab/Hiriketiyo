@@ -1,6 +1,6 @@
 // HIRIKETIYO service worker: caches the app shell so the site opens fast and works offline.
 // Change VERSION whenever you update any file, so visitors receive the new version.
-const VERSION='hiriketiyo-v26';
+const VERSION='hiriketiyo-v28';
 const CORE=[
  "./",
  "index.html",
@@ -9,10 +9,16 @@ const CORE=[
  "data.js",
  "slideshow.js",
  "logo3d.js",
+ "kites.js",
  "manifest.webmanifest",
  "icons/icon-192.png",
  "icons/icon-512.png",
  "icons/maskable-512.png",
+ "assets/brand-emblem-white.png",
+ "assets/brand-emblem-black.png",
+ "assets/brand-wordmark-white.png",
+ "assets/brand-wordmark-black.png",
+ "assets/brand-slogan-white.png",
  "assets/hero-1200.webp",
  "assets/hero-1920.webp",
  "assets/hero-1920.jpg",
@@ -25,21 +31,7 @@ const CORE=[
  "assets/svc-shop.webp",
 
  "assets/bay-1000.webp",
- "assets/bay-1000.jpg",
- "assets/logo-new.png",
- "assets/logo-stroke-mask.png",
- "assets/logo-new-mark.png",
- "assets/logo-emblem-black.png",
- "assets/logo-emblem-white.png",
- "assets/logo-depth-gold.png",
- "assets/logo-lines-cream.png",
- "assets/logo-lines-dark.png",
- "assets/wordmark-black.png",
- "assets/wordmark-white.png",
- "assets/wordmark-gold.png",
- "assets/slogan-black.png",
- "assets/slogan-white.png",
- "assets/blank.png"
+ "assets/bay-1000.jpg"
 ];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(VERSION).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(n=>n!==VERSION).map(n=>caches.delete(n)))).then(()=>self.clients.claim()))});

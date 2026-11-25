@@ -331,3 +331,51 @@ input,select,textarea,button{max-width:100%}
  form{max-width:100%}
  header.hd{padding:.3rem 1rem}
 }
+
+/* ===== v27: new brand logos (emblem + wordmark, transparent PNG) ===== */
+.nlogo{transition:none}.lg-wait .nlogo{opacity:1}
+.l3d{width:fit-content;margin-inline:auto}
+.l3d img.nlogo:not(.ex){width:auto;max-width:none;height:var(--lh,200px)}
+.l3d img.nlogo.ex{filter:brightness(.55)}
+.wmk{display:block;height:auto;max-width:100%;margin:.9rem auto 0}
+/* header lockup */
+header.hd .lk{display:flex;align-items:center;gap:.8rem}
+header.hd .l3d{margin:0;--lh:56px}header.hd.sm .l3d{--lh:44px}
+header.hd .l3d img.nlogo:not(.ex){height:var(--lh)}
+header.hd .wmk{margin:0;width:clamp(100px,11vw,150px)}
+@media(max-width:1240px){header.hd .l3d{--lh:46px}header.hd.sm .l3d{--lh:40px}}
+@media(max-width:420px){header.hd .wmk{width:96px}header.hd .l3d{--lh:40px}header.hd.sm .l3d{--lh:36px}}
+/* hero */
+.hero-lk .l3d{width:fit-content;--lh:clamp(170px,31vh,310px)}
+.hero-lk .wmk{width:clamp(210px,30vw,400px);margin-top:1rem}
+@media(max-width:700px){.hero-lk .l3d{--lh:clamp(150px,26vh,220px)}.hero-lk .wmk{width:min(72vw,300px)}}
+@media(min-width:1700px){.hero-lk .l3d{--lh:340px}.hero-lk .wmk{width:440px}}
+@media(max-height:520px) and (orientation:landscape){.hero-lk .l3d{--lh:110px}.hero-lk .wmk{width:180px;margin-top:.5rem}}
+/* about + footer */
+.lightbox .l3d{--lh:clamp(190px,26vw,260px)}
+.lightbox .wmk{width:min(80%,300px)}
+.lightbox .l3d img.nlogo.ex{filter:brightness(0) invert(.55)}
+footer .l3d{margin:0;--lh:120px}footer .wmk{width:150px;margin:.8rem 0 0}
+footer .fb1 .lk{display:grid;justify-items:start;width:auto;padding:0;background:none}
+
+/* ===== v28: hero slogan from logo, flag kites, safe 3D layers ===== */
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.slg{display:block;width:clamp(270px,50vw,620px);height:auto;margin:1.1rem auto 0;max-width:92%}
+@media(max-width:700px){.slg{width:min(90vw,420px)}}
+/* 3D extrusion layers only appear once the front logo has really loaded (no empty frames) */
+.l3d .ex{display:none!important}.l3d.rdy .ex{display:block!important}
+/* kites */
+.hero>.fkites{position:absolute;inset:0;z-index:1;padding:0;pointer-events:none;overflow:hidden;text-shadow:none}
+.fkite{position:absolute;left:var(--x);bottom:-40%;width:var(--sz);opacity:var(--o,.9);will-change:transform;animation:kup var(--dur) linear var(--dl) infinite;filter:drop-shadow(0 6px 8px #0005)}
+.fks{transform-origin:50% 0;animation:ksw var(--swt) ease-in-out infinite alternate}
+.fks svg{display:block;width:100%;height:auto;overflow:visible}
+.fkt{transform-origin:30px 84px;animation:ktail 2.2s ease-in-out infinite alternate}
+@keyframes kup{from{transform:translate3d(0,0,0)}to{transform:translate3d(0,calc(var(--rise,1000px)*-1.4),0)}}
+@keyframes ksw{from{transform:translateX(calc(var(--sw)*-1)) rotate(calc(var(--rot)*-1))}to{transform:translateX(var(--sw)) rotate(var(--rot))}}
+@keyframes ktail{from{transform:rotate(-9deg)}to{transform:rotate(9deg)}}
+.fkites.paused *{animation-play-state:paused}
+@media(prefers-reduced-motion:reduce){.fkite{animation:none;bottom:var(--y)}.fks,.fkt{animation:none}}
+/* v28 fix: old fixed widths made the depth layers stretch (blob / frame) */
+.l3d,.hero-lk .l3d,.lightbox .l3d,footer .l3d,.hd .l3d{width:fit-content}
+.l3d img.nlogo.ex{object-fit:contain}
+.lightbox .l3d{margin-inline:auto}
