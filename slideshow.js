@@ -5,7 +5,8 @@
 const SEC=6000,calm=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const st=document.createElement('style');
 st.textContent='.ss-x{position:absolute;inset:0;opacity:0}.hero-bg img{transition:opacity 1.4s ease}'+
- '.svc .im img{transition:transform .9s cubic-bezier(.22,1,.36,1),opacity 1.4s ease}';
+ '.svc .im img{transition:transform .9s cubic-bezier(.22,1,.36,1),opacity 1.4s ease}'+
+ '.ss-wrap{display:block;position:relative}.ss-wrap img{display:block}.photo{transition:opacity 1.4s ease}';
 document.head.append(st);
 
 function cycle(els,delay){
@@ -27,6 +28,10 @@ document.querySelectorAll('.svc .im img[data-slot^="svc-"]').forEach(img=>{
   if(/-\d$/.test(img.dataset.slot))return;
   cycle([img,...extras(img,img.dataset.slot)],SEC+(k++)*900);
 });
+
+const bay=document.querySelector('img.photo[data-slot="bay"]');
+if(bay){const p=bay.closest('picture');if(p)p.classList.add('ss-wrap');
+  const ex=extras(bay,'bay');ex.forEach(e=>e.className='photo ss-x');cycle([bay,...ex],SEC+7*900)}
 
 /* show cached uploads on the new slides immediately (data.js refreshes them when new data arrives) */
 try{JSON.parse(localStorage.getItem('hk_img')||'[]').forEach(r=>{if(!r.url)return;

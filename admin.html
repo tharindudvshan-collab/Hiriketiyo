@@ -64,7 +64,7 @@ const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 const BUCKET="site-images", MAXW=2560;
 // slot name must match <img data-slot="..."> in index.html
 const SV=[["svc-surf","Surf lessons"],["svc-stay","Places to stay"],["svc-food","Food and drink"],["svc-ride","Tuk-tuk and transfers"],["svc-exp","Local experiences"],["svc-shop","Shop HIRIKETIYO"]];
-const SLOTS=[["hero","Hero: photo 1"],["hero-2","Hero: photo 2"],["hero-3","Hero: photo 3"],["hero-4","Hero: photo 4"],["bay","A horseshoe bay"]];
+const SLOTS=[["hero","Hero: photo 1"],["hero-2","Hero: photo 2"],["hero-3","Hero: photo 3"],["hero-4","Hero: photo 4"],["bay","About HIRIKETIYO: photo 1"],["bay-2","About HIRIKETIYO: photo 2"],["bay-3","About HIRIKETIYO: photo 3"],["bay-4","About HIRIKETIYO: photo 4"]];
 SV.forEach(([k,l])=>[1,2,3,4].forEach(n=>SLOTS.push([n===1?k:k+"-"+n,l+": photo "+n])));
 
 if(!window.supabase){document.querySelector("#lerr").textContent="Could not load the Supabase library. Check your internet connection and reload."}
