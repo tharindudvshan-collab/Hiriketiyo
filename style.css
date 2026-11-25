@@ -219,3 +219,14 @@ footer .nlogo{height:150px;width:auto}
 .hero-sl{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:.5rem .7rem;font-size:clamp(.72rem,1.6vw,.95rem);letter-spacing:.22em;text-transform:uppercase;color:#fff;text-shadow:0 2px 8px #0008}
 .hero-sl b{font-weight:600;background:#9b0f2a;padding:.25rem .6rem;text-shadow:none}
 @media(prefers-reduced-motion:reduce){.l3d-sw,.l3d i.st{animation:none}.l3d-in{transition:none}}
+
+/* header: no white plate. Deep teal glass + 3D logo with animated gradient stroke (same effect as the hero) */
+header.hd{--paper:#04303d;--ink:#eaf6f3;--line:#ffffff26;background:linear-gradient(180deg,#04303dF2,#06404ee6);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid #ffffff1f}
+body::before{background:#04303d}
+.hd .lk{background:none;box-shadow:none;padding:0}
+.hd .l3d{display:block;width:fit-content;perspective:800px;filter:drop-shadow(0 6px 8px #0006)}
+.hd .l3d .nlogo{width:auto;filter:none}
+.hd .l3d-sw{animation:l3swayH 8s ease-in-out infinite}
+.hd .l3d i.d{transform:translateZ(calc(var(--k) * -1.8px))}
+@keyframes l3swayH{0%,100%{transform:rotateY(-14deg) rotateX(3deg) translateY(0)}50%{transform:rotateY(14deg) rotateX(-2deg) translateY(-3px)}}
+@media(prefers-reduced-motion:reduce){.hd .l3d-sw{animation:none}}
