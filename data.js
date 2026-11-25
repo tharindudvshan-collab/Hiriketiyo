@@ -1,8 +1,8 @@
 /* HIRIKETIYO live data layer (Supabase + PayHere). Loaded after app.js.
    Until the two values below are filled, the site stays fully static and forms show the old "not sent" notice. */
 (()=>{
-const SUPABASE_URL="https://YOUR-PROJECT-REF.supabase.co";
-const SUPABASE_ANON_KEY="YOUR-ANON-KEY";   // public key; RLS protects the data. Never put service_role here.
+const SUPABASE_URL="https://ojitwdejlhbvlnmsbwyy.supabase.co";
+const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9qaXR3ZGVqbGhidmxubXNid3l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU2MDM5NDksImV4cCI6MjExMTE3OTk0OX0.H1rISXmhlAXKB8OLkfYVb7JTTRLJ9TcxKih99FwPqZk";   // public key; RLS protects the data. Never put service_role here.
 if(!window.supabase||SUPABASE_URL.includes("YOUR-"))return;
 
 const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);

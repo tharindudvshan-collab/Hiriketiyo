@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>HIRIKETIYO admin: site images</title>
+<style>
+:root{--bg:#f5f1e8;--card:#fff;--ink:#1d2a2e;--mut:#667378;--line:#d9d3c4;--acc:#0f4c5c;--gold:#b8893b;--ok:#1f7a4d;--bad:#b3261e;color-scheme:light}
+@media(prefers-color-scheme:dark){:root{--bg:#10191c;--card:#172327;--ink:#e9efe9;--mut:#93a4a8;--line:#2a3b40;--acc:#6cc3d5;--gold:#d9a85a;--ok:#5fd194;--bad:#ff8a80;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Georgia,'Times New Roman',serif}
+main{max-width:980px;margin:0 auto;padding:24px 16px 64px}
+h1{font-size:1.7rem;margin:0 0 4px;letter-spacing:.02em}
+p{margin:0 0 12px}.mut{color:var(--mut);font-size:.92rem}
+input,button{font:inherit}
+input[type=email],input[type=password],input[type=text]{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+button{cursor:pointer;border:0;border-radius:8px;padding:10px 16px;background:var(--acc);color:var(--bg);font-weight:700}
+button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+button:disabled{opacity:.5;cursor:wait}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+#login{max-width:380px;margin:12vh auto 0;background:var(--card);padding:24px;border-radius:12px;border:1px solid var(--line)}
+#login label{display:block;margin:12px 0 4px;font-size:.9rem}
+#app{display:none}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
+.slot{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.slot h2{font-size:1.05rem;margin:0}
+.slot .nm{font-family:ui-monospace,Menlo,monospace;font-size:.8rem;color:var(--mut)}
+.pv{aspect-ratio:16/10;background:var(--bg) center/cover no-repeat;border:1px dashed var(--line);border-radius:8px;display:grid;place-items:center;color:var(--mut);font-size:.85rem;position:relative;overflow:hidden;cursor:crosshair}
+.pv img{width:100%;height:100%;object-fit:cover;display:block}
+.pv i{position:absolute;width:16px;height:16px;border:2px solid #fff;background:var(--gold);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 1px #000;pointer-events:none;display:none}
+.slot input[type=file]{font-size:.85rem;width:100%}
+.row{display:flex;gap:8px;align-items:center}.row button{flex:1}
+.st{min-height:1.3em;font-size:.85rem}.st.ok{color:var(--ok)}.st.no{color:var(--bad)}
+</style>
+</head>
+<body>
+<main>
+  <section id="login">
+    <h1>Admin sign in</h1>
+    <p class="mut">Use the admin email you created in Supabase.</p>
+    <form id="lf">
+      <label for="em">Email</label><input id="em" type="email" autocomplete="username" required>
+      <label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password" required>
+      <p id="lerr" class="st no" role="alert"></p>
+      <button type="submit" style="width:100%">Sign in</button>
+    </form>
+  </section>
+
+  <section id="app">
+    <div class="top">
+      <div><h1>Site images</h1><p class="mut" style="margin:0">Choose a photo, click the preview to set the focus point, then save. The live site updates right away.</p></div>
+      <button class="ghost" id="out" type="button">Sign out</button>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+const SUPABASE_URL="https://ojitwdejlhbvlnmsbwyy.supabase.co";
+const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9qaXR3ZGVqbGhidmxubXNid3l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU2MDM5NDksImV4cCI6MjExMTE3OTk0OX0.H1rISXmhlAXKB8OLkfYVb7JTTRLJ9TcxKih99FwPqZk";
+const BUCKET="site-images", MAXW=2560;
+// slot name must match <img data-slot="..."> in index.html
+const SLOTS=[["hero","Hero background"],["bay","A horseshoe bay"],["svc-surf","Service: Surf"],["svc-stay","Service: Stay"],["svc-food","Service: Food"],["svc-ride","Service: Ride"],["svc-exp","Service: Experiences"],["svc-shop","Service: Shop"]];
+
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+const $=s=>document.querySelector(s);
+let rows={};
+
+sb.auth.getSession().then(({data})=>show(data.session));
+sb.auth.onAuthStateChange((_e,s)=>show(s));
+$("#lf").onsubmit=async e=>{e.preventDefault();$("#lerr").textContent="";
+  const{error}=await sb.auth.signInWithPassword({email:$("#em").value.trim(),password:$("#pw").value});
+  if(error)$("#lerr").textContent="Sign in failed. Check your email and password.";};
+$("#out").onclick=()=>sb.auth.signOut();
+
+async function show(s){
+  $("#login").style.display=s?"none":"";$("#app").style.display=s?"block":"none";
+  if(!s)return;
+  const{data}=await sb.from("site_images").select("*");
+  rows=Object.fromEntries((data||[]).map(r=>[r.slot,r]));build();
+}
+
+function build(){
+  const g=$("#grid");g.replaceChildren();
+  SLOTS.forEach(([slot,label])=>{
+    const r=rows[slot]||{},d=document.createElement("div");d.className="slot";
+    d.innerHTML=`<h2>${label}</h2><div class="nm">data-slot="${slot}"</div>
+      <div class="pv">${r.url?`<img src="${r.url}?v=${encodeURIComponent(r.updated_at)}" alt="">`:"No image yet"}<i></i></div>
+      <input type="file" accept="image/*" aria-label="Choose image for ${label}">
+      <input type="text" class="alt" placeholder="Describe the photo (alt text)" value="${(r.alt||"").replace(/"/g,"&quot;")}">
+      <div class="row"><button type="button" class="save">Save image</button><button type="button" class="ghost rm">Remove</button></div>
+      <div class="st" role="status"></div>`;
+    const pv=d.querySelector(".pv"),dot=d.querySelector("i"),file=d.querySelector("input[type=file]"),st=d.querySelector(".st");
+    let fx=r.focal_x??50,fy=r.focal_y??50,blob=null;
+    const place=()=>{const im=pv.querySelector("img");if(im)im.style.objectPosition=fx+"% "+fy+"%";dot.style.left=fx+"%";dot.style.top=fy+"%";dot.style.display=im?"block":"none"};
+    place();
+    pv.onclick=e=>{const b=pv.getBoundingClientRect();fx=Math.round((e.clientX-b.left)/b.width*100);fy=Math.round((e.clientY-b.top)/b.height*100);place()};
+    const msg=(t,c)=>{st.textContent=t;st.className="st "+(c||"")};
+    file.onchange=async()=>{const f=file.files[0];if(!f)return;msg("Preparing image...");
+      try{blob=await toWebp(f);const im=document.createElement("img");im.alt="";im.src=URL.createObjectURL(blob);
+        pv.replaceChildren(im,dot);place();msg(`Ready (${Math.round(blob.size/1024)} KB). Click Save image.`);
+      }catch(x){msg("Could not read that image.","no")}};
+    d.querySelector(".save").onclick=async e=>{const b=e.target;b.disabled=true;msg("Saving...");
+      try{
+        let url=r.url;
+        if(blob){const path=`${slot}-${Date.now()}.webp`;
+          const up=await sb.storage.from(BUCKET).upload(path,blob,{contentType:"image/webp",cacheControl:"31536000"});
+          if(up.error)throw up.error;url=sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;}
+        if(!url){msg("Choose an image first.","no");b.disabled=false;return}
+        const row={slot,url,alt:d.querySelector(".alt").value.trim()||null,focal_x:fx,focal_y:fy,updated_at:new Date().toISOString()};
+        const{error}=await sb.from("site_images").upsert(row,{onConflict:"slot"});
+        if(error)throw error;
+        rows[slot]=row;blob=null;file.value="";msg("Saved. The live site now shows this image.","ok");
+      }catch(x){msg("Save failed: "+(x.message||"unknown error")+". Make sure you are signed in as the admin email.","no")}
+      b.disabled=false};
+    d.querySelector(".rm").onclick=async()=>{if(!confirm("Remove this image and go back to the default?"))return;
+      const{error}=await sb.from("site_images").delete().eq("slot",slot);
+      if(error){msg("Remove failed: "+error.message,"no");return}
+      delete rows[slot];build()};
+    g.append(d);
+  });
+}
+
+// resize to max 2560px wide and convert to WebP (smaller, faster site)
+function toWebp(f){return new Promise((res,rej)=>{const im=new Image(),u=URL.createObjectURL(f);
+  im.onload=()=>{const k=Math.min(1,MAXW/im.width),c=document.createElement("canvas");
+    c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+    URL.revokeObjectURL(u);c.toBlob(b=>b?res(b):rej(),"image/webp",.82)};
+  im.onerror=rej;im.src=u})}
+</script>
+</body>
+</html>
