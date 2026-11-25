@@ -237,8 +237,6 @@ body::before{background:#04303d}
 footer .lk{background:none;box-shadow:none;padding:0;border-radius:0}
 .hero-lk{background:none;box-shadow:none;padding:0;border-radius:0}
 
-/* shine border: a slightly larger copy of the stroke, light gradient flowing behind it */
-.l3d i.rim{left:-3.6%;right:-3.6%;top:-4.3%;bottom:-4.3%;background:linear-gradient(100deg,#fff,#fff1b8,#fff,#aef0ff,#fff);background-size:300% 100%;transform:translateZ(-1.6px);animation:l3flow 3.2s linear infinite reverse}
 /* shine sweep: a white glint that glides across the stroke */
 .l3d i.sh{background:linear-gradient(115deg,#0000 36%,#ffffffd9 47%,#fff 50%,#ffffffd9 53%,#0000 64%);background-size:260% 100%;background-position:150% 0;transform:translateZ(1px);mix-blend-mode:screen;animation:l3shine 3.8s ease-in-out infinite}
 @keyframes l3shine{0%{background-position:150% 0}55%,100%{background-position:-50% 0}}
@@ -254,3 +252,22 @@ header.hd .nlogo{height:56px}header.hd.sm .nlogo{height:44px}
 @media(max-width:1240px){header.hd .nlogo,header.hd.sm .nlogo{height:44px}header.hd.sm .nlogo{height:38px}}
 @media(max-width:520px){header.hd .nlogo{height:38px}header.hd.sm .nlogo{height:34px}}
 @media(prefers-reduced-motion:reduce){.hero-lk .l3d-sw,.l3d i.rim,.l3d i.sh{animation:none}.l3d i.sh{opacity:0}}
+
+/* ===== refined logo: ONE colour, thin stroke, calm professional motion ===== */
+:root{--stroke:#d9a93c;--stroke-d:#6b4a12}
+/* thin single-colour stroke (layer is only ~1% larger than the logo) */
+.l3d i{left:-1%;right:-1%;top:-1.2%;bottom:-1.2%}
+.l3d i.st{background:var(--stroke);animation:none;transform:translateZ(-.6px)}
+/* depth: same hue family, darker, so the logo has body without extra colours */
+.l3d i.d{background:var(--stroke-d)}
+.hero-lk .l3d i.d{transform:translateZ(calc(var(--k) * -1.6px))}
+.hd .l3d i.d{transform:translateZ(calc(var(--k) * -1px))}
+/* one soft glint travelling across the stroke */
+.l3d i.sh{background:linear-gradient(115deg,#0000 42%,#ffffffb3 50%,#0000 58%);background-size:260% 100%;background-position:150% 0;animation:l3shine 5s ease-in-out infinite;mix-blend-mode:screen}
+@keyframes l3shine{0%{background-position:150% 0}50%,100%{background-position:-50% 0}}
+/* calm 3D motion */
+.hero-lk .l3d-sw{animation:l3sway 10s ease-in-out infinite}
+@keyframes l3sway{0%,100%{transform:rotateY(-18deg) rotateX(3deg) translateY(0)}50%{transform:rotateY(18deg) rotateX(-2deg) translateY(-6px)}}
+.hd .l3d-sw{animation:l3swayH 10s ease-in-out infinite}
+@keyframes l3swayH{0%,100%{transform:rotateY(-10deg) rotateX(2deg)}50%{transform:rotateY(10deg) rotateX(-2deg)}}
+@media(prefers-reduced-motion:reduce){.l3d-sw,.l3d i.sh{animation:none}.l3d i.sh{opacity:0}}
