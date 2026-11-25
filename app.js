@@ -1,0 +1,22 @@
+const bd=document.getElementById('birds');[[120,26,0,1],[180,24,-6,.8],[90,30,-12,.9],[240,27,-17,.7],[150,33,-22,.6]].forEach(([y,d,dl,s])=>{const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('class','bird');g.style.cssText=`--y:${y}px;animation-duration:${d}s;animation-delay:${dl}s`;g.innerHTML=`<path transform="scale(${s})" d="M0 0q9-11 18 0q9-11 18 0"/>`;bd.appendChild(g)});
+addEventListener('scroll',()=>document.querySelector('header').classList.toggle('sm',scrollY>60),{passive:true});
+const P=['home','discover','surf','stay','transport','shop'];
+function tog(){const n=document.getElementById('mob');const o=n.classList.toggle('open');document.querySelector('.menu').setAttribute('aria-expanded',o)}
+function route(){let h=location.hash.slice(1)||'home';const pt=h==='partner';if(pt)h='surf';if(!P.includes(h))h='home';
+document.querySelectorAll('.page').forEach(p=>p.classList.toggle('on',p.id===h));
+document.querySelectorAll('.nl a').forEach(a=>a.getAttribute('href')==='#'+h&&!a.classList.contains('cta')?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current'));
+document.getElementById('mob').classList.remove('open');document.querySelector('.menu').setAttribute('aria-expanded','false');pt?document.getElementById('partner').scrollIntoView():window.scrollTo(0,0)}
+addEventListener('hashchange',route);route();
+const S={surf:['Surf lesson','Browse surf partners','#surf'],stay:['A stay by the bay','Browse stays','#stay'],food:['Local food','Browse food &amp; drink','#stay'],ride:['Coastal tuk-tuk trip','Request a quote','#transport']};
+document.getElementById('chips').addEventListener('change',()=>{const v=[...document.querySelectorAll('#chips input:checked')].map(i=>i.value);document.getElementById('plan').innerHTML=v.map(k=>`<div class="card"><h3>${S[k][0]}</h3><a href="${S[k][2]}">${S[k][1]}</a></div>`).join('')});
+document.querySelectorAll('form').forEach(f=>f.addEventListener('submit',e=>{e.preventDefault();const m=f.querySelector('.msg');m.textContent=f.dataset.kind+' checked, but not sent. Bookings need the database and email service to be connected first.';m.classList.add('show')}));
+
+// Offline support (service worker works on https or localhost)
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
+
+// nav: 3D tilt on the CTA pill + Esc closes the menu
+document.querySelectorAll('.cta').forEach(el=>{el.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;el.style.setProperty('--ry',(x*18)+'deg');el.style.setProperty('--rx',(-y*16)+'deg');el.style.setProperty('--mx',((x+.5)*100)+'%')});el.addEventListener('pointerleave',()=>{el.style.removeProperty('--rx');el.style.removeProperty('--ry')})});
+addEventListener('keydown',e=>{if(e.key==='Escape'){document.getElementById('mob').classList.remove('open');document.querySelector('.menu').setAttribute('aria-expanded','false')}});
+
+// service catalog filter
+document.querySelectorAll('.cat-filter button').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.k;document.querySelectorAll('.cat-filter button').forEach(x=>x.setAttribute('aria-pressed',x===b));document.querySelectorAll('.svc').forEach(c=>{const on=k==='all'||c.dataset.c===k;c.hidden=!on;if(on){c.style.animation='none';c.offsetWidth;c.style.animation=''}})}));
