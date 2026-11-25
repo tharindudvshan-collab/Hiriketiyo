@@ -63,7 +63,9 @@ const SUPABASE_URL="https://ojitwdejlhbvlnmsbwyy.supabase.co";
 const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9qaXR3ZGVqbGhidmxubXNid3l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU2MDM5NDksImV4cCI6MjExMTE3OTk0OX0.H1rISXmhlAXKB8OLkfYVb7JTTRLJ9TcxKih99FwPqZk";
 const BUCKET="site-images", MAXW=2560;
 // slot name must match <img data-slot="..."> in index.html
-const SLOTS=[["hero","Hero background"],["bay","A horseshoe bay"],["svc-surf","Service: Surf"],["svc-stay","Service: Stay"],["svc-food","Service: Food"],["svc-ride","Service: Ride"],["svc-exp","Service: Experiences"],["svc-shop","Service: Shop"]];
+const SV=[["svc-surf","Surf lessons"],["svc-stay","Places to stay"],["svc-food","Food and drink"],["svc-ride","Tuk-tuk and transfers"],["svc-exp","Local experiences"],["svc-shop","Shop HIRIKETIYO"]];
+const SLOTS=[["hero","Hero: photo 1"],["hero-2","Hero: photo 2"],["hero-3","Hero: photo 3"],["hero-4","Hero: photo 4"],["bay","A horseshoe bay"]];
+SV.forEach(([k,l])=>[1,2,3,4].forEach(n=>SLOTS.push([n===1?k:k+"-"+n,l+": photo "+n])));
 
 if(!window.supabase){document.querySelector("#lerr").textContent="Could not load the Supabase library. Check your internet connection and reload."}
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
