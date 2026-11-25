@@ -1,6 +1,6 @@
 // HIRIKETIYO service worker: caches the app shell so the site opens fast and works offline.
 // Change VERSION whenever you update any file, so visitors receive the new version.
-const VERSION='hiriketiyo-v19';
+const VERSION='hiriketiyo-v20';
 const CORE=[
  "./",
  "index.html",
@@ -25,6 +25,8 @@ const CORE=[
 
  "assets/bay-1000.webp",
  "assets/bay-1000.jpg",
+ "assets/logo-new.png",
+ "assets/logo-new-mark.png",
  "assets/logo-emblem-black.png",
  "assets/logo-emblem-white.png",
  "assets/logo-depth-gold.png",

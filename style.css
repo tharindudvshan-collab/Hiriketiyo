@@ -191,3 +191,15 @@ header .mobnav.open{visibility:visible;opacity:1;transform:none;transition:trans
 dialog#co{border:1px solid var(--line);background:var(--card);color:var(--txt);padding:0;max-width:480px;width:calc(100% - 2rem);max-height:92vh;overflow:auto}dialog#co::backdrop{background:#04303d99}
 dialog#co form{padding:1.5rem;max-width:none}dialog#co h3{margin:0}.sum{background:var(--bg);padding:.8rem 1rem;font-size:.9rem}.sum div{display:flex;justify-content:space-between}.sum .t{font-weight:700;border-top:1px solid var(--line);margin-top:.4rem;padding-top:.4rem}
 dialog#co .row{display:flex;gap:.8rem;flex-wrap:wrap}dialog#co .btn{cursor:pointer;background:none}[hidden]{display:none!important}
+
+/* new logo (replaces the layered emblem, wordmark and slogan) */
+.nlogo{display:block;height:auto;max-width:100%}
+.hd .lk{width:auto}
+.hd .nlogo{height:92px;width:auto;transition:height .3s;filter:drop-shadow(0 3px 4px #0002)}
+.hd.sm .nlogo{height:60px}
+@media(max-width:1240px){.hd .nlogo,.hd.sm .nlogo{height:54px}}
+.hero-lk{width:auto;padding:1rem 1.3rem;border-radius:20px;background:#fffffff0;box-shadow:0 18px 40px -16px #0007}
+.hero-lk .nlogo{height:clamp(190px,34vh,320px);width:auto}
+.lightbox .nlogo{width:min(100%,340px);height:auto;margin:auto}
+footer .lk{width:auto;justify-items:center;padding:.8rem 1rem;border-radius:14px;background:#fff}
+footer .nlogo{height:150px;width:auto}
