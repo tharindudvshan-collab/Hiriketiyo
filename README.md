@@ -37,3 +37,9 @@ hiriketiyo/
 - Text, links, switches and custom CSS are saved in Supabase `site_theme` under key `content` (the design stays under key `theme`), so no new table is needed.
 - Files to upload together: `admin.html`, `content-map.js`, `data.js`, `index.html`, `sw.js` (VERSION is now `hiriketiyo-v33`).
 - `admin.html` must stay in the same folder (same origin) as `index.html`, because the preview loads `index.html?hkpreview=1`.
+
+## Discover guide
+- `#discover` is the full Hiriketiya article: hero, chapter bar, 7 chapters, nearby places, map, best-time chart, responsible-travel list, planner, closing banner.
+- Location buttons are plain Google Maps links (search + directions) and one embedded map; no API key needed. Edit the link in Admin Studio (Discover groups) or in `index.html`.
+- Photos: each chapter/place has a slot (`disc-hero`, `disc-bay`, `disc-surf`, `disc-life`, `disc-food`, `disc-nature`, `disc-culture`, `disc-slow`, `disc-p1`..`disc-p5`). Upload in Admin > Photos (use Photo 1 of each group). Empty slots show a teal placeholder.
+- In-page jumps use `data-go` + `scrollIntoView` (not `#hash`), because the hash is reserved for page routing in `app.js`.

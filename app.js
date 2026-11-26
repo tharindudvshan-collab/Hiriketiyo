@@ -28,3 +28,21 @@ document.querySelectorAll('.nl a,.mobnav a,.logo').forEach(a=>a.addEventListener
   s.className='fx-rip';s.style.cssText=`width:${d}px;height:${d}px;left:${e.clientX-r.left-d/2}px;top:${e.clientY-r.top-d/2}px`;
   a.append(s);s.addEventListener('animationend',()=>s.remove())}));
 addEventListener('hashchange',()=>{const p=document.querySelector('.page.on');if(!p)return;p.classList.remove('fx-in');void p.offsetWidth;p.classList.add('fx-in')});
+
+// Discover guide: chapter bar (smooth scroll + highlight) and reveal-on-scroll.
+// In-page jumps use data-go (not #hash), because the hash is reserved for page routing.
+(()=>{const d=document.getElementById('discover'),hd=document.querySelector('header');if(!d||!hd)return;
+const calm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const hh=()=>document.documentElement.style.setProperty('--hh',hd.offsetHeight+'px');hh();
+if('ResizeObserver'in window)new ResizeObserver(hh).observe(hd);else addEventListener('resize',hh,{passive:true});
+d.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(!b)return;const t=document.getElementById(b.dataset.go);if(!t)return;e.preventDefault();t.scrollIntoView({behavior:calm?'auto':'smooth',block:'start'})});
+if(!('IntersectionObserver'in window))return;
+const nav=[...d.querySelectorAll('.dnav [data-go]')],bar=d.querySelector('.dnav-in');
+const spy=new IntersectionObserver(es=>es.forEach(en=>{if(!en.isIntersecting)return;
+  nav.forEach(b=>b.removeAttribute('aria-current'));const b=nav.find(x=>x.dataset.go===en.target.id);
+  if(b){b.setAttribute('aria-current','true');bar.scrollTo({left:b.offsetLeft-(bar.clientWidth-b.offsetWidth)/2,behavior:calm?'auto':'smooth'})}}),{rootMargin:'-30% 0px -60% 0px'});
+nav.forEach(b=>{const s=document.getElementById(b.dataset.go);s&&spy.observe(s)});
+d.classList.add('rvon');
+const rv=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('rvin');rv.unobserve(en.target)}}),{rootMargin:'0px 0px -8% 0px',threshold:.08});
+d.querySelectorAll('.rv').forEach(el=>rv.observe(el));
+})();
