@@ -555,3 +555,38 @@ html.hk-pat .sand{background:linear-gradient(180deg,color-mix(in srgb,var(--sand
 .tp-row{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
 .tp-sumbox{margin:1.5rem 0}.tp-sumbox pre{white-space:pre-wrap;font:400 .9rem/1.6 var(--sans);margin:.5rem 0 1rem}
 .tp-act{display:flex;flex-wrap:wrap;gap:.6rem}.tp-act .btn{margin-top:0}
+
+/* ===== v36: six main navigation buttons (Discover, Experiences, Stay & Eat, Destinations, Local Products, Plan Your Trip) ===== */
+.nl{gap:.1rem}
+.nl .nw{position:relative;display:flex}
+.nl a{display:inline-flex;align-items:center;gap:.5rem;letter-spacing:.14em;padding:.8rem .7rem}
+.nl a .ni{width:17px;height:17px;flex:none;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;opacity:.78;transition:transform .45s cubic-bezier(.34,1.56,.64,1),opacity .2s,color .2s}
+.nl a:hover .ni,.nl a:focus-visible .ni,.nl a[aria-current=page] .ni{opacity:1;color:var(--teal);transform:translateY(-1px) scale(1.12)}
+.nl a.cta{margin-left:.5rem;padding:.72rem 1.15rem}
+.nl a.cta .ni,.nl a.cta:hover .ni{color:#fff;opacity:1}
+/* hover card with the number and the short description */
+.nl .nt{position:absolute;top:calc(100% + 4px);left:50%;width:15.5rem;padding:.8rem .95rem;border-radius:12px;background:var(--paper);color:var(--ink);border:1px solid var(--line);box-shadow:0 18px 30px -14px #04303d80;font:400 .78rem/1.5 var(--sans);letter-spacing:0;text-transform:none;text-align:left;white-space:normal;opacity:0;visibility:hidden;pointer-events:none;transform:translate(-50%,6px);transition:opacity .25s,transform .35s cubic-bezier(.22,1,.36,1),visibility 0s .25s;z-index:45}
+.nl .nt b{display:block;font:600 .62rem var(--sans);letter-spacing:.24em;color:var(--teal);margin-bottom:.3rem}
+.nl:not(.r) .nw:first-child .nt{left:0;transform:translateY(6px)}
+.nl.r .nw:last-child .nt{left:auto;right:0;transform:translateY(6px)}
+.nl .nw:hover .nt,.nl .nw:focus-within .nt{opacity:1;visibility:visible;transform:translate(-50%,0);transition-delay:.12s,.12s,0s}
+.nl:not(.r) .nw:first-child:hover .nt,.nl:not(.r) .nw:first-child:focus-within .nt,.nl.r .nw:last-child:hover .nt,.nl.r .nw:last-child:focus-within .nt{transform:none}
+/* six items need more room: switch to the phone menu a little earlier */
+@media(min-width:1241px) and (max-width:1320px){.nl{display:none}.menu{display:grid;place-items:center}header{grid-template-columns:1fr auto}.logo{justify-self:start}.mobnav{display:flex!important}}
+/* phone menu: icon tile + title + one-line description + number */
+.mobnav{max-height:calc(100vh - 76px);max-height:calc(100dvh - 76px);overflow-y:auto;overscroll-behavior:contain}
+.mobnav a{display:flex;align-items:center;gap:.9rem;letter-spacing:0;text-transform:none}
+.mobnav .mi{flex:none;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;border:1px solid var(--line);color:var(--teal);transition:background .25s,color .25s,border-color .25s}
+.mobnav .mi svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.mobnav .mt{flex:1;min-width:0;display:flex;flex-direction:column;gap:.18rem}
+.mobnav .mt b{font:600 .78rem var(--sans);letter-spacing:.16em;text-transform:uppercase}
+.mobnav .mt small{font:400 .78rem/1.4 var(--sans);opacity:.72}
+.mobnav .mn{font:600 .62rem var(--sans);letter-spacing:.2em;color:var(--teal)}
+.mobnav a[aria-current=page] .mi{background:var(--teal);border-color:var(--teal);color:#fff}
+.mobnav a.cta{text-align:left;padding:.9rem 1.1rem}
+.mobnav a.cta .mi{border-color:#ffffff66;color:#fff}
+.mobnav a.cta .mt small,.mobnav a.cta .mn{color:#fff;opacity:.88}
+.mobnav a.cta:hover{padding-left:1.1rem}
+/* jump targets sit below the sticky header */
+#tp,#d-places{scroll-margin-top:calc(var(--hh,84px) + 12px)}
+@media(prefers-reduced-motion:reduce){.nl a .ni,.nl .nt,.mobnav .mi{transition:none!important}}

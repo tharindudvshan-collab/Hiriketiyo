@@ -20,11 +20,14 @@ add(G0,{k:'seo.tc',l:'Phone browser bar color',s:'meta[name="theme-color"]',t:'a
 
 /* ---------- Top bar & menus ---------- */
 const G1='Top bar & menus';
-const NAV=[['home','Home'],['discover','Discover'],['surf','Surf & Experiences'],['stay','Stay & Eat'],['transport','Transport'],['shop','Shop']];
-NAV.forEach(([h,l])=>add(G1,{k:'nav.'+h,l:'Top bar: '+l,s:`.nl a[href="#${h}"]:not(.cta) .rl i`}));
-add(G1,{k:'nav.cta',l:'Top bar button (and mobile menu button)',s:'.nl a.cta .rl i,.mobnav a.cta'});
-add(G1,{k:'nav.ctaH',l:'Top bar button: link',s:'.nl a.cta,.mobnav a.cta',t:'attr',a:'href'});
-NAV.forEach(([h,l])=>add(G1,{k:'mob.'+h,l:'Phone menu: '+l,s:`.mobnav a[href="#${h}"]:not(.cta)`}));
+const NAV=[['discover','01 Discover'],['surf','02 Experiences'],['stay','03 Stay & Eat'],['destinations','04 Destinations'],['shop','05 Local Products'],['plan','06 Plan Your Trip']];
+NAV.forEach(([h,l])=>{
+  add(G1,{k:'nav.'+h,l:'Top bar: '+l,s:`.nl a[href="#${h}"] .rl i`});
+  add(G1,{k:'nav.'+h+'.tip',l:'Top bar hover text: '+l,s:`#nt-${h} .tx`,t:'long'});
+  add(G1,{k:'mob.'+h,l:'Phone menu: '+l,s:`.mobnav a[href="#${h}"] .mt b`});
+  add(G1,{k:'mob.'+h+'.s',l:'Phone menu text: '+l,s:`.mobnav a[href="#${h}"] .mt small`,t:'long'});
+});
+add(G1,{k:'nav.ctaH',l:'Plan Your Trip button: link',s:'.nl a.cta,.mobnav a.cta',t:'attr',a:'href'});
 
 /* ---------- Home ---------- */
 const G2='Home: Hero (top of page)';
