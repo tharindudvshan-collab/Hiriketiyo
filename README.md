@@ -30,3 +30,10 @@ hiriketiyo/
 - Hero: `<picture class="hero-bg">` (WebP + JPG, 3 widths, `fetchpriority=high`, preloaded in `<head>`), a `.hero-shade` overlay for text legibility, and a slow zoom that is disabled under `prefers-reduced-motion`.
 - To change the hero photo: export 1200/1920/2560px widths as WebP (q~80) and JPG (q~82) with the same names, then bump `VERSION` in `sw.js`.
 - Forms are front-end only: they show a "not sent" notice until a backend is connected.
+
+## Admin Studio (admin.html)
+- Edit every text, link and section switch of the site, with a live preview (Desktop / Tablet / Phone, Light / Dark, any page) and **Click to edit** inside the preview.
+- `content-map.js` is the single list of editable items (selector -> label). To make something new editable, add ONE line there. Both `index.html` and `admin.html` load it.
+- Text, links, switches and custom CSS are saved in Supabase `site_theme` under key `content` (the design stays under key `theme`), so no new table is needed.
+- Files to upload together: `admin.html`, `content-map.js`, `data.js`, `index.html`, `sw.js` (VERSION is now `hiriketiyo-v33`).
+- `admin.html` must stay in the same folder (same origin) as `index.html`, because the preview loads `index.html?hkpreview=1`.

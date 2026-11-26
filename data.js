@@ -71,13 +71,74 @@ function applyTheme(t){if(!t||!t.light||!t.dark)return;
   document.documentElement.classList.toggle("hk-grad",d.bgType==="gradient");
   const fh=fontHref(d.hFont,d.bFont);let l=$("#hk-fonts");
   if(fh){if(!l){l=document.createElement("link");l.id="hk-fonts";l.rel="stylesheet";document.head.append(l)}if(l.href!==fh)l.href=fh}else if(l)l.remove();}
-try{applyTheme(JSON.parse(localStorage.getItem("hk_theme")||"null"))}catch(e){}
-sb.from("site_theme").select("value").eq("key","theme").maybeSingle().then(({data})=>{
-  if(data&&data.value){applyTheme(data.value);try{localStorage.setItem("hk_theme",JSON.stringify(data.value))}catch(e){}}
-  else try{localStorage.removeItem("hk_theme");$("#hk-theme")?.remove();$("#hk-fonts")?.remove();document.documentElement.classList.remove("hk-pat","hk-grad")}catch(e){}});
+/* ---- live preview mode: admin.html embeds this page as index.html?hkpreview=1 and streams its unsaved draft in ---- */
+const PREVIEW=/[?&]hkpreview=1/.test(location.search)&&parent!==window;
+const applyContent=c=>{try{window.HK&&window.HK.apply(c)}catch(e){}};
+if(!PREVIEW){
+  try{applyTheme(JSON.parse(localStorage.getItem("hk_theme")||"null"))}catch(e){}
+  try{applyContent(JSON.parse(localStorage.getItem("hk_content")||"null"))}catch(e){}
+  sb.from("site_theme").select("key,value").in("key",["theme","content"]).then(({data,error})=>{
+    if(error||!data)return;
+    const m=Object.fromEntries(data.map(r=>[r.key,r.value]));
+    if(m.theme){applyTheme(m.theme);try{localStorage.setItem("hk_theme",JSON.stringify(m.theme))}catch(e){}}
+    else try{localStorage.removeItem("hk_theme");$("#hk-theme")?.remove();$("#hk-fonts")?.remove();document.documentElement.classList.remove("hk-pat","hk-grad")}catch(e){}
+    if(m.content){applyContent(m.content);try{localStorage.setItem("hk_content",JSON.stringify(m.content))}catch(e){}}
+    else try{localStorage.removeItem("hk_content");applyContent(null)}catch(e){}});
+}
 try{const c=JSON.parse(localStorage.getItem("hk_img")||"[]");applyImages(c);applyLogos(c)}catch(e){}
 sb.from("site_images").select("slot,url,alt,focal_x,focal_y,updated_at").not("url","is",null).then(({data})=>{
-  if(data){applyImages(data);applyLogos(data);try{localStorage.setItem("hk_img",JSON.stringify(data))}catch(e){}}});
+  if(data){applyImages(data);applyLogos(data);window.__hkPaintImgs&&window.__hkPaintImgs();try{localStorage.setItem("hk_img",JSON.stringify(data))}catch(e){}}});
+
+
+/* ---- preview bridge (only active inside the admin preview frame) ---- */
+if(PREVIEW){
+  const root=document.documentElement,post=m=>parent.postMessage(Object.assign({hk:1},m),location.origin==="null"?"*":location.origin);
+  const draft={};let edit=false,hl=null;
+  root.classList.add("hk-preview");
+  const st=document.createElement("style");
+  st.textContent=".hk-hl{outline:2px dashed #ff7a1a!important;outline-offset:3px;cursor:pointer!important}.hk-flash{animation:hkf 1.6s ease-out}@keyframes hkf{0%,60%{outline:3px solid #ff7a1a;outline-offset:4px}100%{outline:3px solid transparent;outline-offset:4px}}.hk-edit a,.hk-edit button,.hk-edit label,.hk-edit input,.hk-edit select{cursor:pointer}";
+  document.head.append(st);
+  function paintImgs(){const im=draft.images||{};
+    Object.entries(im).forEach(([slot,r])=>{if(!r||!r.url)return;
+      if(/^logo-/.test(slot)){logoRows[slot]=r.url;return}
+      $$(`img[data-slot="${CSS.escape(slot)}"]`).forEach(el=>{const p=el.closest("picture");if(p)$$("source",p).forEach(x=>x.remove());
+        el.removeAttribute("srcset");el.removeAttribute("sizes");el.src=r.url;
+        el.style.objectPosition=(r.fx!==50||r.fy!==50)?r.fx+"% "+r.fy+"%":""})});
+    applyLogos()}
+  window.__hkPaintImgs=paintImgs;
+  function paint(){
+    if(draft.mode==="dark"||draft.mode==="light")root.dataset.theme=draft.mode;else delete root.dataset.theme;
+    if(draft.theme)applyTheme(draft.theme);
+    if(draft.content)applyContent(draft.content);
+    paintImgs();}
+  const prio=f=>f.t==="show"?2:f.t==="attr"?1:0;
+  function fieldAt(t){const F=(window.HK&&window.HK.fields)||[];
+    for(let n=t;n&&n.nodeType===1&&n!==root;n=n.parentElement){
+      let best=null;
+      for(const f of F){try{if(n.matches(f.s)&&(!best||prio(f)<prio(best)))best=f}catch(e){}}
+      if(best)return{f:best,el:n}}
+    return null}
+  function imgAt(x,y){return document.elementsFromPoint(x,y).find(e=>e.tagName==="IMG"&&e.dataset.slot&&getComputedStyle(e).opacity!=="0")}
+  function clear(){if(hl){hl.classList.remove("hk-hl");hl=null}}
+  document.addEventListener("mouseover",e=>{if(!edit)return;const h=fieldAt(e.target);clear();if(h&&h.f.t!=="show"){hl=h.el;hl.classList.add("hk-hl")}},true);
+  document.addEventListener("click",e=>{if(!edit)return;e.preventDefault();e.stopPropagation();
+    const h=fieldAt(e.target);
+    if(h&&h.f.t!=="show"){post({type:"pick",k:h.f.k});return}
+    const im=imgAt(e.clientX,e.clientY);
+    if(im){post({type:"pick",slot:im.dataset.slot});return}
+    if(h)post({type:"pick",k:h.f.k})},true);
+  addEventListener("hashchange",()=>post({type:"page",id:location.hash.slice(1)||"home"}));
+  addEventListener("message",e=>{
+    if(e.source!==parent||(location.origin!=="null"&&e.origin!==location.origin))return;
+    const m=e.data||{};if(m.hk!==1)return;
+    if(m.type==="state"){Object.assign(draft,m.state||{});edit=!!draft.edit;root.classList.toggle("hk-edit",edit);if(!edit)clear();paint()}
+    else if(m.type==="goto"){const h=String(m.hash||"home").replace(/[^\w-]/g,"");if(location.hash!=="#"+h)location.hash="#"+h}
+    else if(m.type==="focus"){const f=((window.HK&&window.HK.fields)||[]).find(x=>x.k===m.k);if(!f)return;
+      const el=document.querySelector(f.s);if(!el)return;
+      const pg=el.closest(".page"),off=pg&&!pg.classList.contains("on");if(off)location.hash="#"+pg.id;
+      setTimeout(()=>{el.scrollIntoView({block:"center",behavior:"smooth"});el.classList.remove("hk-flash");void el.offsetWidth;el.classList.add("hk-flash")},off?80:0)}});
+  post({type:"ready"});
+}
 
 sb.from("platform_settings").select("customer_fee_bps").single().then(({data})=>{if(data)feeBps=data.customer_fee_bps});
 
