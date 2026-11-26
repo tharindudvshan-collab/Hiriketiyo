@@ -590,3 +590,26 @@ html.hk-pat .sand{background:linear-gradient(180deg,color-mix(in srgb,var(--sand
 /* jump targets sit below the sticky header */
 #tp,#d-places{scroll-margin-top:calc(var(--hh,84px) + 12px)}
 @media(prefers-reduced-motion:reduce){.nl a .ni,.nl .nt,.mobnav .mi{transition:none!important}}
+
+/* ===== v37: compact, professional footer ===== */
+footer{padding:clamp(1.6rem,3.5vw,2.4rem) clamp(1rem,4vw,2rem) .9rem}
+.ft{grid-template-columns:1.25fr 1.5fr 1.15fr .9fr;gap:1.25rem clamp(1.25rem,3vw,2.5rem)}
+.ft h4{margin:0 0 .55rem;letter-spacing:.14em;font-size:.7rem}
+.ft a{padding:.18rem 0;font-size:.88rem}
+/* brand: small emblem beside the wordmark, tagline under it */
+footer .fb1 .lk{display:flex;align-items:center;gap:.75rem}
+footer .l3d{--lh:56px}
+footer .wmk{width:128px;margin:0}
+.ftag{margin:.7rem 0 0;max-width:32ch;font-size:.84rem;line-height:1.5}
+/* Explore: links in two columns instead of one tall list */
+footer nav{display:grid;grid-template-columns:1fr 1fr;column-gap:1.25rem;align-content:start}
+footer nav h4{grid-column:1/-1}
+/* contact */
+.ft address{font-size:.88rem;line-height:1.5}
+.ft address p{margin:0 0 .4rem}
+/* button */
+.ft .fcta{margin-top:.4rem;padding:.55rem 1.1rem;letter-spacing:.08em}
+/* bottom bar */
+.fbar{margin-top:1.4rem;padding-top:.8rem;font-size:.78rem}
+@media(max-width:980px){.ft{grid-template-columns:1fr 1fr}.ft .fb1{grid-column:1/-1}}
+@media(max-width:560px){.ft{grid-template-columns:1fr;gap:1.1rem}footer nav{grid-template-columns:1fr 1fr}.fbar{gap:.4rem}}
