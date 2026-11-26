@@ -46,3 +46,23 @@ d.classList.add('rvon');
 const rv=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('rvin');rv.unobserve(en.target)}}),{rootMargin:'0px 0px -8% 0px',threshold:.08});
 d.querySelectorAll('.rv').forEach(el=>rv.observe(el));
 })();
+
+// Discover: "how far from the bay" chart, built from the distance written on each place card
+// (so editing a distance in Admin Studio updates the chart too).
+(()=>{const g=document.querySelector('#d-places .dpl-grid'),L=document.getElementById('dlad');if(!g||!L)return;
+const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+let timer;
+function build(){
+  const rows=[...g.querySelectorAll('.dpl')].map(c=>({id:c.id,n:(c.querySelector('h4')||{}).textContent,
+    km:parseFloat(((c.querySelector('.dd b')||{}).textContent||'').replace(',','.'))}))
+    .filter(r=>r.id&&r.n&&isFinite(r.km)).sort((a,b)=>a.km-b.km);
+  L.replaceChildren();if(!rows.length)return;
+  const max=Math.max(...rows.map(r=>r.km)),ol=el('ol');
+  L.append(el('h4','dlh','How far from the bay'),el('p','dls','Road distance from Hiriketiya Beach. Tap a place to jump to it.'),ol);
+  rows.forEach((r,i)=>{const li=el('li'),b=el('button'),tr=el('span','tr'),f=el('i');
+    b.type='button';b.dataset.go=r.id;b.style.setProperty('--i',i);
+    f.style.setProperty('--w',Math.max(4,r.km/max*100).toFixed(1)+'%');tr.append(f);
+    b.append(el('span','nm',r.n.trim()),tr,el('span','kk',r.km+' km'));li.append(b);ol.append(li)})}
+build();
+new MutationObserver(()=>{clearTimeout(timer);timer=setTimeout(build,60)}).observe(g,{subtree:true,childList:true,characterData:true});
+})();
