@@ -572,7 +572,7 @@ html.hk-pat .sand{background:linear-gradient(180deg,color-mix(in srgb,var(--sand
 .nl .nw:hover .nt,.nl .nw:focus-within .nt{opacity:1;visibility:visible;transform:translate(-50%,0);transition-delay:.12s,.12s,0s}
 .nl:not(.r) .nw:first-child:hover .nt,.nl:not(.r) .nw:first-child:focus-within .nt,.nl.r .nw:last-child:hover .nt,.nl.r .nw:last-child:focus-within .nt{transform:none}
 /* six items need more room: switch to the phone menu a little earlier */
-@media(min-width:1241px) and (max-width:1320px){.nl{display:none}.menu{display:grid;place-items:center}header{grid-template-columns:1fr auto}.logo{justify-self:start}.mobnav{display:flex!important}}
+@media(min-width:1241px) and (max-width:1500px){.nl{display:none}.menu{display:grid;place-items:center}header{grid-template-columns:1fr auto}.logo{justify-self:start}.mobnav{display:flex!important}}
 /* phone menu: icon tile + title + one-line description + number */
 .mobnav{max-height:calc(100vh - 76px);max-height:calc(100dvh - 76px);overflow-y:auto;overscroll-behavior:contain}
 .mobnav a{display:flex;align-items:center;gap:.9rem;letter-spacing:0;text-transform:none}
@@ -629,3 +629,11 @@ footer nav h4{grid-column:1/-1}
 .xs-t span{font-size:.85rem;line-height:1.5;color:var(--mut)}
 .xs-note{margin:1rem auto 1.5rem;max-width:640px;text-align:left}
 @media(prefers-reduced-motion:reduce){.xs-card{transition:none}.xs-card:hover{transform:none}}
+
+/* v38: "Explore Services" button in the top bar (outlined pill, next to Plan Your Trip) */
+.nl a.svcbtn{margin-left:.5rem;padding:.62rem 1.05rem;border-radius:999px;border:1.5px solid var(--teal);color:var(--teal)}
+.nl a.svcbtn .rl i,.nl a.svcbtn .rl i:last-child{color:var(--teal)}
+.nl a.svcbtn .ni{color:var(--teal);opacity:1}
+.nl a.svcbtn::before,.nl a.svcbtn::after{display:none}
+.nl a.svcbtn:hover,.nl a.svcbtn[aria-current=page]{background:var(--teal);color:#fff}
+.nl a.svcbtn:hover .rl i,.nl a.svcbtn:hover .ni,.nl a.svcbtn[aria-current=page] .rl i,.nl a.svcbtn[aria-current=page] .ni{color:#fff}

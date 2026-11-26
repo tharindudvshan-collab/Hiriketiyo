@@ -20,7 +20,7 @@ add(G0,{k:'seo.tc',l:'Phone browser bar color',s:'meta[name="theme-color"]',t:'a
 
 /* ---------- Top bar & menus ---------- */
 const G1='Top bar & menus';
-const NAV=[['discover','01 Discover'],['surf','02 Experiences'],['stay','03 Stay & Eat'],['destinations','04 Destinations'],['shop','05 Local Products'],['plan','06 Plan Your Trip']];
+const NAV=[['discover','01 Discover'],['surf','02 Experiences'],['stay','03 Stay & Eat'],['destinations','04 Destinations'],['shop','05 Local Products'],['services','Explore Services'],['plan','06 Plan Your Trip']];
 NAV.forEach(([h,l])=>{
   add(G1,{k:'nav.'+h,l:'Top bar: '+l,s:`.nl a[href="#${h}"] .rl i`});
   add(G1,{k:'nav.'+h+'.tip',l:'Top bar hover text: '+l,s:`#nt-${h} .tx`,t:'long'});
