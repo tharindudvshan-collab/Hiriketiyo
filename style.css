@@ -380,26 +380,26 @@ footer .fb1 .lk{display:grid;justify-items:start;width:auto;padding:0;background
 .l3d img.nlogo.ex{object-fit:contain}
 .lightbox .l3d{margin-inline:auto}
 
-/* ===== v29: header follows the theme (white in light mode, black in dark mode) + click animations ===== */
-header.hd{--paper:#fff;--ink:#0a0a0a;--line:#0000001f;--hbg:#fff;background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom:1px solid #0000001a;transition:background .3s,border-color .3s}
-body::before{background:#fff}
-/* logo: the artwork is white, so turn it black on the white bar */
-header.hd .l3d img.nlogo,header.hd .wmk{filter:brightness(0)}
+/* ===== v29: header + page colours come from variables (admin.html > Colors can change them) ===== */
+:root{--hdr-bg:#fff;--hdr-ink:#0a0a0a}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--hdr-bg:#000;--hdr-ink:#fff}}
+:root[data-theme=dark]{--hdr-bg:#000;--hdr-ink:#fff}
+header.hd{--paper:var(--hdr-bg);--ink:var(--hdr-ink);--line:color-mix(in srgb,var(--hdr-ink) 14%,transparent);--hbg:var(--hdr-bg);background:var(--hdr-bg);-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom:1px solid var(--line);transition:background .3s,border-color .3s}
+body::before{background:var(--hdr-bg)}
+/* built-in logo art is white: turn it black on a light bar. Uploaded logos (data-custom) are never filtered */
+header.hd .l3d img.nlogo:not(.ex),header.hd .wmk{filter:brightness(0)}
 header.hd .l3d{filter:drop-shadow(0 4px 5px #0003)}
 header.hd .l3d img.nlogo.ex{filter:brightness(0) opacity(.55)}
 @media(prefers-color-scheme:dark){
- :root:not([data-theme=light]) header.hd{--paper:#000;--ink:#fff;--line:#ffffff26;--hbg:#000;background:#000;border-bottom-color:#ffffff1f}
- :root:not([data-theme=light]) body::before{background:#000}
- :root:not([data-theme=light]) header.hd .l3d img.nlogo,:root:not([data-theme=light]) header.hd .wmk{filter:none}
- :root:not([data-theme=light]) header.hd .l3d{filter:drop-shadow(0 6px 8px #0006)}
+ :root:not([data-theme=light]) header.hd .l3d img.nlogo:not(.ex),:root:not([data-theme=light]) header.hd .wmk{filter:none}
  :root:not([data-theme=light]) header.hd .l3d img.nlogo.ex{filter:brightness(.55)}
 }
-:root[data-theme=dark] header.hd{--paper:#000;--ink:#fff;--line:#ffffff26;--hbg:#000;background:#000;border-bottom-color:#ffffff1f}
-:root[data-theme=dark] body::before{background:#000}
-:root[data-theme=dark] header.hd .l3d img.nlogo,:root[data-theme=dark] header.hd .wmk{filter:none}
+:root[data-theme=dark] header.hd .l3d img.nlogo:not(.ex),:root[data-theme=dark] header.hd .wmk{filter:none}
 :root[data-theme=dark] header.hd .l3d img.nlogo.ex{filter:brightness(.55)}
-header.hd .mobnav{background:color-mix(in srgb,var(--hbg) 94%,transparent)}
+header.hd img[data-custom]:not(.ex){filter:none!important}
+header.hd .mobnav{background:color-mix(in srgb,var(--hdr-bg) 94%,transparent)}
 header.hd .mobnav a:not(.cta){color:var(--ink)}
+.nl a.cta,.cta{background:linear-gradient(135deg,color-mix(in srgb,var(--teal) 78%,#fff),var(--teal))}
 
 /* click: press + ripple + underline bar grows under the active link */
 .nl a:not(.cta),.mobnav a:not(.cta){overflow:hidden;transition:transform .2s cubic-bezier(.34,1.56,.64,1),color .2s}

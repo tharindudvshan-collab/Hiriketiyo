@@ -33,6 +33,30 @@ button:disabled{opacity:.5;cursor:wait}
 .slot input[type=file]{font-size:.85rem;width:100%}
 .row{display:flex;gap:8px;align-items:center}.row button{flex:1}
 .st{min-height:1.3em;font-size:.85rem}.st.ok{color:var(--ok)}.st.no{color:var(--bad)}
+
+.tabs{display:flex;gap:6px;margin:0 0 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tabs button{background:transparent;color:var(--mut);border-radius:8px 8px 0 0;padding:10px 18px;border:1px solid transparent;border-bottom:0}
+.tabs button[aria-selected=true]{background:var(--card);color:var(--ink);border-color:var(--line);position:relative;top:1px}
+.panel{display:none}.panel.on{display:block}
+.pv.chk{background:repeating-conic-gradient(#ccc 0 25%,#fff 0 50%) 0 0/16px 16px;cursor:default}
+.pv.chk.dk{background:repeating-conic-gradient(#222 0 25%,#000 0 50%) 0 0/16px 16px}
+.pv.chk img{object-fit:contain;padding:10px}.pv.chk i{display:none!important}
+.help{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:8px;padding:12px 14px;margin:0 0 16px;font-size:.92rem}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.box h2{font-size:1.1rem;margin:0 0 12px}
+.cf{display:grid;grid-template-columns:44px 1fr 96px;gap:8px;align-items:center;margin:0 0 8px;font-size:.9rem}
+.cf input[type=color]{width:44px;height:36px;padding:0;border:1px solid var(--line);border-radius:6px;background:none;cursor:pointer}
+.cf input[type=text]{padding:7px 8px;font-family:ui-monospace,Menlo,monospace;font-size:.85rem}
+.mock{border-radius:10px;overflow:hidden;border:1px solid #0003;margin-top:12px;background:var(--b);color:var(--t);font:13px/1.4 system-ui,sans-serif}
+.mock .mh{display:flex;gap:12px;align-items:center;padding:10px 12px;background:var(--hb);color:var(--hi)}
+.mock .mh b{margin-right:auto;letter-spacing:.12em}.mock .mh em{font-style:normal;background:var(--a);color:#fff;padding:4px 12px;border-radius:99px}
+.mock .mb{padding:14px}.mock h3{margin:0 0 6px;font:700 15px Georgia,serif}
+.mock .mc{background:var(--c);border:1px solid color-mix(in srgb,var(--t) 16%,var(--b));border-radius:8px;padding:10px;display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.mock .mc a{color:var(--a);font-weight:700}.mock .gb{height:4px;width:60px;background:var(--g);border-radius:4px;margin-top:10px}
+.presets{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}
+.warn{color:var(--bad);font-size:.82rem;min-height:1.2em}
+.bar{display:flex;gap:10px;align-items:center;margin-top:16px;flex-wrap:wrap}.bar .st{flex:1}
 </style>
 </head>
 <body>
@@ -50,10 +74,27 @@ button:disabled{opacity:.5;cursor:wait}
 
   <section id="app">
     <div class="top">
-      <div><h1>Site images</h1><p class="mut" style="margin:0">Choose a photo, click the preview to set the focus point, then save. The live site updates right away.</p></div>
+      <div><h1>Site settings</h1><p class="mut" style="margin:0">Photos, logo and colours. Changes show on the live site right after you save.</p></div>
       <button class="ghost" id="out" type="button">Sign out</button>
     </div>
-    <div class="grid" id="grid"></div>
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" data-t="photos" aria-selected="true">Photos</button>
+      <button type="button" role="tab" data-t="logo" aria-selected="false">Logo</button>
+      <button type="button" role="tab" data-t="colors" aria-selected="false">Colors</button>
+    </div>
+    <div class="panel on" id="p-photos"><p class="mut">Choose a photo, click the preview to set the focus point, then save.</p><div class="grid" id="grid"></div></div>
+    <div class="panel" id="p-logo">
+      <div class="help"><b>Logo tips.</b> Upload a PNG, WebP or SVG with a transparent background. The site picks the right version on its own:
+      <b>light background</b> = a dark logo (shown on the white top bar and light sections), <b>dark background</b> = a light logo (shown on the black top bar, the photo and the footer).
+      If you upload only one, it is used everywhere, so make sure it is readable on both. Emblem is the symbol, wordmark is the name written out.</div>
+      <div class="grid" id="lgrid"></div>
+    </div>
+    <div class="panel" id="p-colors">
+      <div class="help"><b>Colors.</b> Light mode and dark mode have their own set, because visitors see the one that matches their device. Pick a preset or fine-tune each colour. The small preview updates as you go; nothing changes on the live site until you press <b>Save colors</b>.</div>
+      <div class="presets" id="presets"></div>
+      <div class="cols" id="tcols"></div>
+      <div class="bar"><button type="button" id="tsave">Save colors</button><button type="button" class="ghost" id="treset">Back to default colors</button><div class="st" id="tst" role="status"></div></div>
+    </div>
   </section>
 </main>
 
@@ -66,11 +107,23 @@ const BUCKET="site-images", MAXW=2560;
 const SV=[["svc-surf","Surf lessons"],["svc-stay","Places to stay"],["svc-food","Food and drink"],["svc-ride","Tuk-tuk and transfers"],["svc-exp","Local experiences"],["svc-shop","Shop HIRIKETIYO"]];
 const SLOTS=[["hero","Hero: photo 1"],["hero-2","Hero: photo 2"],["hero-3","Hero: photo 3"],["hero-4","Hero: photo 4"],["bay","About HIRIKETIYO: photo 1"],["bay-2","About HIRIKETIYO: photo 2"],["bay-3","About HIRIKETIYO: photo 3"],["bay-4","About HIRIKETIYO: photo 4"]];
 SV.forEach(([k,l])=>[1,2,3,4].forEach(n=>SLOTS.push([n===1?k:k+"-"+n,l+": photo "+n])));
+// logo slots: "light" = for light backgrounds (dark artwork), "dark" = for dark backgrounds (light artwork)
+const LOGOS=[["logo-emblem-light","Emblem: for light backgrounds",0],["logo-emblem-dark","Emblem: for dark backgrounds",1],["logo-wordmark-light","Wordmark: for light backgrounds",0],["logo-wordmark-dark","Wordmark: for dark backgrounds",1]];
+// colour theme
+const FIELDS=[["accent","Accent (buttons, links)"],["gold","Highlight"],["bg","Page background"],["card","Cards"],["text","Text"],["hbg","Top bar background"],["hink","Top bar text"]];
+const DEF={light:{accent:"#087F83",gold:"#B59A62",bg:"#EEF6F3",card:"#FFFFFF",text:"#1F3A40",hbg:"#FFFFFF",hink:"#0A0A0A"},
+ dark:{accent:"#2BB3B7",gold:"#B59A62",bg:"#06181E",card:"#0B2530",text:"#E3EFEC",hbg:"#000000",hink:"#FFFFFF"}};
+const PRESETS={
+ "Ocean (default)":DEF,
+ "Sunset":{light:{accent:"#C2410C",gold:"#D99A2B",bg:"#FFF6EC",card:"#FFFFFF",text:"#3B2416",hbg:"#FFFFFF",hink:"#1A0F08"},dark:{accent:"#FB923C",gold:"#F2B84B",bg:"#1A0F0A",card:"#27160E",text:"#F8E9DC",hbg:"#000000",hink:"#FFFFFF"}},
+ "Jungle":{light:{accent:"#1E6B45",gold:"#B8893B",bg:"#F1F6EE",card:"#FFFFFF",text:"#1E2D22",hbg:"#FFFFFF",hink:"#0A0A0A"},dark:{accent:"#4ADE80",gold:"#D9A85A",bg:"#08150D",card:"#0F2217",text:"#E6F2E9",hbg:"#000000",hink:"#FFFFFF"}},
+ "Coral":{light:{accent:"#D9534F",gold:"#C99A3C",bg:"#FDF3F1",card:"#FFFFFF",text:"#3A2321",hbg:"#FFFFFF",hink:"#0A0A0A"},dark:{accent:"#FF8A80",gold:"#E0B050",bg:"#1B0F0E",card:"#2A1816",text:"#F7E7E5",hbg:"#000000",hink:"#FFFFFF"}},
+ "Black & white":{light:{accent:"#111111",gold:"#8A8A8A",bg:"#F5F5F5",card:"#FFFFFF",text:"#111111",hbg:"#FFFFFF",hink:"#000000"},dark:{accent:"#FFFFFF",gold:"#9A9A9A",bg:"#0A0A0A",card:"#161616",text:"#F2F2F2",hbg:"#000000",hink:"#FFFFFF"}}};
 
 if(!window.supabase){document.querySelector("#lerr").textContent="Could not load the Supabase library. Check your internet connection and reload."}
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 const $=s=>document.querySelector(s);
-let rows={};
+let rows={},theme=JSON.parse(JSON.stringify(DEF));
 
 // setTimeout avoids a known supabase-js deadlock when calling the API inside this callback
 sb.auth.onAuthStateChange((_e,s)=>setTimeout(()=>show(s),0));
@@ -82,30 +135,41 @@ $("#out").onclick=()=>sb.auth.signOut();
 async function show(s){
   $("#login").style.display=s?"none":"";$("#app").style.display=s?"block":"none";
   if(!s)return;
-  build(); // show the slots straight away, then fill in saved images
+  build();buildTheme(); // show the slots straight away, then fill in saved data
   const{data,error}=await sb.from("site_images").select("*");
   if(error)alert("Could not load images: "+error.message+"\nRun the Supabase SQL (site_images table) first.");
   rows=Object.fromEntries((data||[]).map(r=>[r.slot,r]));build();
+  const t=await sb.from("site_theme").select("value").eq("key","theme").maybeSingle();
+  if(t.error)tmsg("Colors cannot be saved yet: run the site_theme SQL in Supabase first ("+t.error.message+").","no");
+  else if(t.data&&t.data.value&&t.data.value.light&&t.data.value.dark){theme=merge(t.data.value);buildTheme()}
 }
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".tabs button").forEach(x=>x.setAttribute("aria-selected",x===b));
+  document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("on",p.id==="p-"+b.dataset.t))});
 
 function build(){
-  const g=$("#grid");g.replaceChildren();
-  SLOTS.forEach(([slot,label])=>{
+  fill($("#grid"),SLOTS.map(([s,l])=>[s,l,0,false]));
+  fill($("#lgrid"),LOGOS.map(([s,l,dk])=>[s,l,dk,true]));
+}
+function fill(g,list){
+  g.replaceChildren();
+  list.forEach(([slot,label,dk,isLogo])=>{
     const r=rows[slot]||{},d=document.createElement("div");d.className="slot";
-    d.innerHTML=`<h2>${label}</h2><div class="nm">data-slot="${slot}"</div>
-      <div class="pv">${r.url?`<img src="${r.url}?v=${encodeURIComponent(r.updated_at)}" alt="">`:"No image yet"}<i></i></div>
+    d.innerHTML=`<h2>${label}</h2><div class="nm">${isLogo?"logo":"data-slot"}="${slot}"</div>
+      <div class="pv${isLogo?" chk"+(dk?" dk":""):""}">${r.url?`<img src="${r.url}?v=${encodeURIComponent(r.updated_at)}" alt="">`:"No image yet"}<i></i></div>
       <input type="file" accept="image/*" aria-label="Choose image for ${label}">
       <input type="text" class="alt" placeholder="Describe the photo (alt text)" value="${(r.alt||"").replace(/"/g,"&quot;")}">
       <div class="row"><button type="button" class="save">Save image</button><button type="button" class="ghost rm">Remove</button></div>
       <div class="st" role="status"></div>`;
     const pv=d.querySelector(".pv"),dot=d.querySelector("i"),file=d.querySelector("input[type=file]"),st=d.querySelector(".st");
     let fx=r.focal_x??50,fy=r.focal_y??50,blob=null;
+    if(isLogo)d.querySelector(".alt").value=r.alt||label;
     const place=()=>{const im=pv.querySelector("img");if(im)im.style.objectPosition=fx+"% "+fy+"%";dot.style.left=fx+"%";dot.style.top=fy+"%";dot.style.display=im?"block":"none"};
     place();
-    pv.onclick=e=>{const b=pv.getBoundingClientRect();fx=Math.round((e.clientX-b.left)/b.width*100);fy=Math.round((e.clientY-b.top)/b.height*100);place()};
+    pv.onclick=isLogo?null:e=>{const b=pv.getBoundingClientRect();fx=Math.round((e.clientX-b.left)/b.width*100);fy=Math.round((e.clientY-b.top)/b.height*100);place()};
     const msg=(t,c)=>{st.textContent=t;st.className="st "+(c||"")};
     file.onchange=async()=>{const f=file.files[0];if(!f)return;msg("Preparing image...");
-      try{blob=await toWebp(f);const im=document.createElement("img");im.alt="";im.src=URL.createObjectURL(blob);
+      try{blob=await toWebp(f,isLogo?1200:MAXW);const im=document.createElement("img");im.alt="";im.src=URL.createObjectURL(blob);
         pv.replaceChildren(im,dot);place();msg(`Ready (${Math.round(blob.size/1024)} KB). Click Save image.`);
       }catch(x){msg("Could not read that image.","no")}};
     d.querySelector(".save").onclick=async e=>{const b=e.target;b.disabled=true;msg("Saving...");
@@ -130,11 +194,52 @@ function build(){
 }
 
 // resize to max 2560px wide and convert to WebP (smaller, faster site)
-function toWebp(f){return new Promise((res,rej)=>{const im=new Image(),u=URL.createObjectURL(f);
-  im.onload=()=>{const k=Math.min(1,MAXW/im.width),c=document.createElement("canvas");
-    c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+function toWebp(f,max){max=max||MAXW;return new Promise((res,rej)=>{const im=new Image(),u=URL.createObjectURL(f);
+  im.onload=()=>{const w0=im.width||max,h0=im.height||max,k=Math.min(1,max/w0),c=document.createElement("canvas");
+    c.width=Math.round(w0*k);c.height=Math.round(h0*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);
     URL.revokeObjectURL(u);c.toBlob(b=>b?res(b):rej(),"image/webp",.82)};
   im.onerror=rej;im.src=u})}
+
+/* ---------- colours ---------- */
+const HEX=/^#[0-9a-f]{6}$/i;
+function merge(v){const o=JSON.parse(JSON.stringify(DEF));["light","dark"].forEach(m=>FIELDS.forEach(([k])=>{if(HEX.test(v[m]?.[k]||""))o[m][k]=v[m][k]}));return o}
+const tmsg=(t,c)=>{const e=$("#tst");e.textContent=t;e.className="st "+(c||"")};
+function lum(h){const c=[1,3,5].map(i=>{const v=parseInt(h.slice(i,i+2),16)/255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});return .2126*c[0]+.7152*c[1]+.0722*c[2]}
+function ratio(a,b){const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)}
+function buildTheme(){
+  const P=$("#presets");P.replaceChildren();
+  Object.keys(PRESETS).forEach(n=>{const b=document.createElement("button");b.type="button";b.className="ghost";b.textContent=n;
+    b.onclick=()=>{theme=JSON.parse(JSON.stringify(PRESETS[n]));buildTheme();tmsg("Preset applied. Press Save colors to publish it.")};P.append(b)});
+  const T=$("#tcols");T.replaceChildren();
+  [["light","Light mode"],["dark","Dark mode"]].forEach(([m,title])=>{
+    const bx=document.createElement("div");bx.className="box";
+    bx.innerHTML=`<h2>${title}</h2>`;
+    FIELDS.forEach(([k,l])=>{const w=document.createElement("div");w.className="cf";
+      w.innerHTML=`<input type="color" value="${theme[m][k].toLowerCase()}" aria-label="${l} (${title})"><label>${l}</label><input type="text" value="${theme[m][k]}" maxlength="7" aria-label="${l} hex (${title})">`;
+      const [c,,t]=w.children;
+      const set=v=>{theme[m][k]=v.toUpperCase();c.value=v.toLowerCase();t.value=v.toUpperCase();paint()};
+      c.oninput=()=>set(c.value);
+      t.oninput=()=>{let v=t.value.trim();if(v&&v[0]!=="#")v="#"+v;if(HEX.test(v))set(v)};
+      bx.append(w)});
+    bx.insertAdjacentHTML("beforeend",`<div class="warn" role="status"></div><div class="mock"><div class="mh"><b>HIRIKETIYO</b><span>Discover</span><span>Surf</span><em>Plan your trip</em></div><div class="mb"><h3>Everything for your trip</h3><div>Sample paragraph text.</div><div class="mc"><span>Surf lesson</span><a>Book now</a></div><div class="gb"></div></div></div>`);
+    bx.dataset.m=m;T.append(bx)});
+  paint();
+}
+function paint(){document.querySelectorAll("#tcols .box").forEach(bx=>{const c=theme[bx.dataset.m],m=bx.querySelector(".mock");
+  m.style.cssText=`--a:${c.accent};--g:${c.gold};--b:${c.bg};--c:${c.card};--t:${c.text};--hb:${c.hbg};--hi:${c.hink}`;
+  const w=[];if(ratio(c.text,c.bg)<4.5)w.push("Text is hard to read on the page background.");
+  if(ratio(c.hink,c.hbg)<4.5)w.push("Top bar text is hard to read on the top bar.");
+  if(ratio("#ffffff",c.accent)<3)w.push("White button text is hard to read on the accent colour.");
+  bx.querySelector(".warn").textContent=w.join(" ")})}
+$("#tsave").onclick=async e=>{const b=e.target;b.disabled=true;tmsg("Saving...");
+  const{error}=await sb.from("site_theme").upsert({key:"theme",value:theme,updated_at:new Date().toISOString()},{onConflict:"key"});
+  b.disabled=false;
+  if(error)tmsg("Save failed: "+error.message+". Run the site_theme SQL in Supabase and sign in as the admin.","no");
+  else tmsg("Saved. Reload the live site to see the new colors.","ok")};
+$("#treset").onclick=async()=>{if(!confirm("Go back to the default colors? This removes your saved colors from the live site."))return;
+  const{error}=await sb.from("site_theme").delete().eq("key","theme");
+  if(error){tmsg("Reset failed: "+error.message,"no");return}
+  theme=JSON.parse(JSON.stringify(DEF));buildTheme();tmsg("Default colors restored.","ok")};
 </script>
 </body>
 </html>

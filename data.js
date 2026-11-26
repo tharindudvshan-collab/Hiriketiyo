@@ -24,9 +24,30 @@ function applyImages(rows){rows.forEach(r=>{if(!r.url)return;const src=r.url+"?v
     const pic=el.closest("picture");if(pic)$$("source",pic).forEach(s=>s.remove());
     el.removeAttribute("srcset");el.removeAttribute("sizes");el.src=src;if(r.alt)el.alt=r.alt;
     if(r.focal_x!==50||r.focal_y!==50)el.style.objectPosition=r.focal_x+"% "+r.focal_y+"%";});});}
-try{applyImages(JSON.parse(localStorage.getItem("hk_img")||"[]"))}catch(e){}
+
+/* ---- logo + colour theme (set in admin.html > Logo / Colors) ---- */
+const isDark=()=>{const t=document.documentElement.dataset.theme;return t?t==="dark":matchMedia("(prefers-color-scheme:dark)").matches};
+let logoRows={};
+function applyLogos(rows){if(rows)rows.forEach(r=>{if(/^logo-/.test(r.slot)&&r.url)logoRows[r.slot]=r.url+"?v="+encodeURIComponent(r.updated_at)});
+  $$("img.nlogo,img.wmk").forEach(el=>{
+    const o=el.dataset.o||(el.dataset.o=el.getAttribute("src")||"");
+    const kind=/emblem/.test(o)?"emblem":/wordmark/.test(o)?"wordmark":null;if(!kind)return;
+    const dark=el.closest("header")?isDark():/white/.test(o);   /* header follows the theme; other places keep their original contrast */
+    const want="logo-"+kind+(dark?"-dark":"-light"),alt="logo-"+kind+(dark?"-light":"-dark"),u=logoRows[want]||logoRows[alt];
+    if(u){if(el.getAttribute("src")!==u)el.src=u;el.dataset.custom="1"}});}
+matchMedia("(prefers-color-scheme:dark)").addEventListener("change",()=>applyLogos());
+function applyTheme(t){if(!t||!t.light||!t.dark)return;
+  const v=c=>`--teal:${c.accent};--gold:${c.gold};--bg:${c.bg};--paper:${c.bg};--card:${c.card};--txt:${c.text};--ink:${c.text};`+
+   `--mut:color-mix(in srgb,${c.text} 68%,${c.bg});--line:color-mix(in srgb,${c.text} 16%,${c.bg});--sand:color-mix(in srgb,${c.gold} 16%,${c.bg});--hdr-bg:${c.hbg};--hdr-ink:${c.hink};`;
+  let s=$("#hk-theme");if(!s){s=document.createElement("style");s.id="hk-theme";document.head.append(s)}
+  s.textContent=`:root{${v(t.light)}}@media(prefers-color-scheme:dark){:root:not([data-theme=light]){${v(t.dark)}}}:root[data-theme=dark]{${v(t.dark)}}`;}
+try{applyTheme(JSON.parse(localStorage.getItem("hk_theme")||"null"))}catch(e){}
+sb.from("site_theme").select("value").eq("key","theme").maybeSingle().then(({data})=>{
+  if(data&&data.value){applyTheme(data.value);try{localStorage.setItem("hk_theme",JSON.stringify(data.value))}catch(e){}}
+  else try{localStorage.removeItem("hk_theme");$("#hk-theme")?.remove()}catch(e){}});
+try{const c=JSON.parse(localStorage.getItem("hk_img")||"[]");applyImages(c);applyLogos(c)}catch(e){}
 sb.from("site_images").select("slot,url,alt,focal_x,focal_y,updated_at").not("url","is",null).then(({data})=>{
-  if(data){applyImages(data);try{localStorage.setItem("hk_img",JSON.stringify(data))}catch(e){}}});
+  if(data){applyImages(data);applyLogos(data);try{localStorage.setItem("hk_img",JSON.stringify(data))}catch(e){}}});
 
 sb.from("platform_settings").select("customer_fee_bps").single().then(({data})=>{if(data)feeBps=data.customer_fee_bps});
 
