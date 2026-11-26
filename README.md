@@ -63,3 +63,8 @@ hiriketiyo/
 - `slideshow.js` gives every photo slot up to 4 photos (`slot`, `slot-2`, `slot-3`, `slot-4`): hero, About photo, 6 service cards, Discover banner, 7 chapters and the 8 place cards.
 - Extra photos inside a `<picture>` (hero, About) are wrapped in a span, because a `<picture>` would otherwise show its first photo again instead of the new one.
 - A slideshow only runs while on screen. With reduced motion on, photos swap without a fade, every 9 seconds.
+
+## Trip planner (Surf & Experiences > top section `#tp`)
+- `trip.js` builds the itinerary (days, food/gym/surf/places, room, arrival transfer). Rides between stops default to tuk-tuk; the customer can change each one, or all at once, or type their own.
+- Plan goes out by WhatsApp (number in `trip.js`, `wa.me/94717505506`), Copy, or the form (hidden `#tp-plan` field). Add `trip.js` to the offline `CORE` list (done, VERSION `hiriketiyo-v35`).
+- Upload together: `index.html`, `style.css`, `trip.js`, `sw.js`, `content-map.js`.

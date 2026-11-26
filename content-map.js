@@ -53,6 +53,12 @@ add(G4,{k:'brand.b',l:'Button',s:'#home>section:nth-of-type(2) a.btn'});
 add(G4,{k:'brand.bh',l:'Button: link',s:'#home>section:nth-of-type(2) a.btn',t:'attr',a:'href'});
 add(G4,{k:'show.brand',l:'Show the brand section',s:'#home>section:nth-of-type(2)',t:'show'});
 
+const GT='Surf page: Trip planner';
+add(GT,{k:'tp.cap',l:'Small heading',s:'#tp .cap'});
+add(GT,{k:'tp.h',l:'Heading',s:'#tp h2'});
+add(GT,{k:'tp.p',l:'Intro text',s:'#tp .in>p.mut',t:'long'});
+add(GT,{k:'show.tp',l:'Show the trip planner',s:'#tp',t:'show'});
+
 const G5='Home: About';
 add(G5,{k:'about.h',l:'Heading',s:'#home>section:nth-of-type(3) h2'});
 add(G5,{k:'about.p1',l:'Paragraph 1',s:'#home>section:nth-of-type(3) p:nth-of-type(1)',t:'long'});
