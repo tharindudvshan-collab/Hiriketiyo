@@ -36,15 +36,45 @@ function applyLogos(rows){if(rows)rows.forEach(r=>{if(/^logo-/.test(r.slot)&&r.u
     const want="logo-"+kind+(dark?"-dark":"-light"),alt="logo-"+kind+(dark?"-light":"-dark"),u=logoRows[want]||logoRows[alt];
     if(u){if(el.getAttribute("src")!==u)el.src=u;el.dataset.custom="1"}});}
 matchMedia("(prefers-color-scheme:dark)").addEventListener("change",()=>applyLogos());
+
+const _s=(d,w)=>`<path d="${d}" fill="none" stroke="#000" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+const PATSVG={dots:'<circle cx="20" cy="20" r="2.4"/>',grid:_s("M0 .5H40M.5 0V40",1),lines:_s("M0 40L40 0M-10 10L10 -10M30 50L50 30",1.4),
+ waves:_s("M0 20Q10 6 20 20T40 20",1.6),diamonds:_s("M20 5L35 20L20 35L5 20Z",1.2),plus:_s("M20 13V27M13 20H27",1.8),zigzag:_s("M0 28L10 14L20 28L30 14L40 28",1.4),
+ bubbles:'<circle cx="14" cy="24" r="9" fill="none" stroke="#000" stroke-width="1.3"/><circle cx="33" cy="9" r="4" fill="none" stroke="#000" stroke-width="1.3"/>'};
+const patUrl=n=>PATSVG[n]?`url("data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40">'+PATSVG[n]+'</svg>')}")`:"none";
+const HF={"Kaushan Script":"cursive","Pacifico":"cursive","Lobster":"cursive","Caveat":"cursive","Playfair Display":"serif","Cormorant Garamond":"serif","DM Serif Display":"serif","Poppins":"sans-serif","Montserrat":"sans-serif"};
+const BF={"Montserrat":["sans-serif","400;500;600"],"Inter":["sans-serif","400;500;600"],"Poppins":["sans-serif","400;500;600"],"Nunito":["sans-serif","400;500;600"],"Open Sans":["sans-serif","400;500;600"],"Lato":["sans-serif","400;700"],"Merriweather":["serif","400;700"]};
+const fontHref=(h,b)=>{const f=[];if(h!=="Kaushan Script")f.push("family="+h.replace(/ /g,"+"));if(b!=="Montserrat")f.push("family="+b.replace(/ /g,"+")+":wght@"+BF[b][1]);return f.length?"https://fonts.googleapis.com/css2?"+f.join("&")+"&display=swap":""};
+
+const DD={pattern:"none",pSize:32,pOpacity:8,pColor:"accent",bgType:"solid",angle:160,radius:"orig",shadow:"orig",scale:100,hFont:"Kaushan Script",bFont:"Montserrat",flags:true,kites:true};
 function applyTheme(t){if(!t||!t.light||!t.dark)return;
+  const d=Object.assign({},DD,t.design||{});
+  if(!PATSVG[d.pattern])d.pattern="none";if(!HF[d.hFont])d.hFont=DD.hFont;if(!BF[d.bFont])d.bFont=DD.bFont;
+  const col=c=>c[d.pColor]||c.accent;
   const v=c=>`--teal:${c.accent};--gold:${c.gold};--bg:${c.bg};--paper:${c.bg};--card:${c.card};--txt:${c.text};--ink:${c.text};`+
-   `--mut:color-mix(in srgb,${c.text} 68%,${c.bg});--line:color-mix(in srgb,${c.text} 16%,${c.bg});--sand:color-mix(in srgb,${c.gold} 16%,${c.bg});--hdr-bg:${c.hbg};--hdr-ink:${c.hink};`;
+   `--mut:color-mix(in srgb,${c.text} 68%,${c.bg});--line:color-mix(in srgb,${c.text} 16%,${c.bg});--sand:color-mix(in srgb,${c.gold} 16%,${c.bg});--hdr-bg:${c.hbg};--hdr-ink:${c.hink};`+
+   `--hk-pc:${col(c)};--hk-bgi:linear-gradient(${+d.angle||160}deg,${c.bg},${c.bg2||c.bg});`;
+  const common=`--hk-po:${(+d.pOpacity||8)/100};--hk-ps:${+d.pSize||32}px;--hk-pm:${patUrl(d.pattern)};`+
+   (d.hFont!==DD.hFont?`--script:'${d.hFont}',${HF[d.hFont]};`:"")+(d.bFont!==DD.bFont?`--sans:'${d.bFont}',${BF[d.bFont][0]};`:"");
+  let css=`:root{${v(t.light)}${common}}@media(prefers-color-scheme:dark){:root:not([data-theme=light]){${v(t.dark)}}}:root[data-theme=dark]{${v(t.dark)}}`;
+  if(d.radius!=="orig"){const r=Math.max(0,+d.radius||0);
+    css+=`.card,.lcard,.svc,.btn,.box,select,textarea,input:not([type=checkbox]):not([type=radio]),.photo,.lim,#co{border-radius:${r}px!important}.svc,.lcard{overflow:hidden}`}
+  if(d.shadow==="none")css+=`.card,.svc,.lcard{box-shadow:none!important}`;
+  if(d.shadow==="strong")css+=`.card,.svc,.lcard{box-shadow:0 18px 44px -10px #0000004d!important}`;
+  if(+d.scale&&+d.scale!==100)css+=`html{font-size:${+d.scale}%}`;
+  if(d.flags===false)css+=`.flagbar{display:none!important}`;
+  if(d.kites===false)css+=`.fkites{display:none!important}`;
   let s=$("#hk-theme");if(!s){s=document.createElement("style");s.id="hk-theme";document.head.append(s)}
-  s.textContent=`:root{${v(t.light)}}@media(prefers-color-scheme:dark){:root:not([data-theme=light]){${v(t.dark)}}}:root[data-theme=dark]{${v(t.dark)}}`;}
+  s.textContent=css;
+  if(!$("#hk-bg")){const a=document.createElement("div");a.id="hk-bg";const b=document.createElement("div");b.id="hk-pat";document.body.prepend(b);document.body.prepend(a)}
+  document.documentElement.classList.toggle("hk-pat",d.pattern!=="none");
+  document.documentElement.classList.toggle("hk-grad",d.bgType==="gradient");
+  const fh=fontHref(d.hFont,d.bFont);let l=$("#hk-fonts");
+  if(fh){if(!l){l=document.createElement("link");l.id="hk-fonts";l.rel="stylesheet";document.head.append(l)}if(l.href!==fh)l.href=fh}else if(l)l.remove();}
 try{applyTheme(JSON.parse(localStorage.getItem("hk_theme")||"null"))}catch(e){}
 sb.from("site_theme").select("value").eq("key","theme").maybeSingle().then(({data})=>{
   if(data&&data.value){applyTheme(data.value);try{localStorage.setItem("hk_theme",JSON.stringify(data.value))}catch(e){}}
-  else try{localStorage.removeItem("hk_theme");$("#hk-theme")?.remove()}catch(e){}});
+  else try{localStorage.removeItem("hk_theme");$("#hk-theme")?.remove();$("#hk-fonts")?.remove();document.documentElement.classList.remove("hk-pat","hk-grad")}catch(e){}});
 try{const c=JSON.parse(localStorage.getItem("hk_img")||"[]");applyImages(c);applyLogos(c)}catch(e){}
 sb.from("site_images").select("slot,url,alt,focal_x,focal_y,updated_at").not("url","is",null).then(({data})=>{
   if(data){applyImages(data);applyLogos(data);try{localStorage.setItem("hk_img",JSON.stringify(data))}catch(e){}}});

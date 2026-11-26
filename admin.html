@@ -57,6 +57,28 @@ button:disabled{opacity:.5;cursor:wait}
 .presets{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}
 .warn{color:var(--bad);font-size:.82rem;min-height:1.2em}
 .bar{display:flex;gap:10px;align-items:center;margin-top:16px;flex-wrap:wrap}.bar .st{flex:1}
+
+h2.sec{font-size:1.1rem;margin:4px 0 10px}
+.mock{position:relative}.mock>*:not(.mp){position:relative}
+.mp{position:absolute;inset:0;pointer-events:none;background:var(--pc);opacity:var(--po);-webkit-mask:var(--pm) 0 0/var(--ps) repeat;mask:var(--pm) 0 0/var(--ps) repeat}
+.mock .mc{border-radius:var(--r);box-shadow:var(--sh)}
+.box.wide{grid-column:1/-1}
+.dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px}
+.dg h3{font-size:1rem;margin:0 0 10px}
+.dr{display:grid;grid-template-columns:130px 1fr;gap:10px;align-items:center;margin:0 0 10px;font-size:.9rem}
+.dr>div{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.dr input[type=range]{flex:1;min-width:120px;accent-color:var(--acc)}
+.dr output{min-width:48px;font-size:.85rem;color:var(--mut)}
+.dr select{padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;min-width:180px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;flex-wrap:wrap}
+.seg button{background:transparent;color:var(--ink);border-radius:0;padding:7px 12px;font-weight:600;font-size:.85rem}
+.seg button[aria-pressed=true]{background:var(--acc);color:var(--bg)}
+.pats{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px;margin:0 0 14px}
+.pt{background:var(--bg);color:var(--ink);border:2px solid var(--line);border-radius:10px;padding:6px;font-size:.78rem;font-weight:600;display:flex;flex-direction:column;gap:6px;align-items:stretch}
+.pt i{display:block;height:38px;border-radius:6px;background:var(--acc);-webkit-mask:var(--pm) 0 0/20px repeat;mask:var(--pm) 0 0/20px repeat}
+.pt i.no{background:none;-webkit-mask:none;mask:none;display:grid;place-items:center;color:var(--mut);font-style:normal}
+.pt[aria-pressed=true]{border-color:var(--acc);box-shadow:0 0 0 2px var(--acc) inset}
+.chk2{display:flex;gap:8px;align-items:center;margin:0 0 8px}.chk2 input{width:auto}
 </style>
 </head>
 <body>
@@ -80,7 +102,7 @@ button:disabled{opacity:.5;cursor:wait}
     <div class="tabs" role="tablist">
       <button type="button" role="tab" data-t="photos" aria-selected="true">Photos</button>
       <button type="button" role="tab" data-t="logo" aria-selected="false">Logo</button>
-      <button type="button" role="tab" data-t="colors" aria-selected="false">Colors</button>
+      <button type="button" role="tab" data-t="colors" aria-selected="false">Design</button>
     </div>
     <div class="panel on" id="p-photos"><p class="mut">Choose a photo, click the preview to set the focus point, then save.</p><div class="grid" id="grid"></div></div>
     <div class="panel" id="p-logo">
@@ -90,10 +112,11 @@ button:disabled{opacity:.5;cursor:wait}
       <div class="grid" id="lgrid"></div>
     </div>
     <div class="panel" id="p-colors">
-      <div class="help"><b>Colors.</b> Light mode and dark mode have their own set, because visitors see the one that matches their device. Pick a preset or fine-tune each colour. The small preview updates as you go; nothing changes on the live site until you press <b>Save colors</b>.</div>
+      <div class="help"><b>Design.</b> Start with a <b>Quick style</b>, then fine-tune anything below. The previews update as you go; nothing changes on the live site until you press <b>Save design</b>. Light mode and dark mode have their own colors, because visitors see the one that matches their device.</div>
+      <h2 class="sec">Quick styles</h2>
       <div class="presets" id="presets"></div>
       <div class="cols" id="tcols"></div>
-      <div class="bar"><button type="button" id="tsave">Save colors</button><button type="button" class="ghost" id="treset">Back to default colors</button><div class="st" id="tst" role="status"></div></div>
+      <div class="bar"><button type="button" id="tsave">Save design</button><button type="button" class="ghost" id="treset">Back to the original design</button><div class="st" id="tst" role="status"></div></div>
     </div>
   </section>
 </main>
@@ -109,21 +132,34 @@ const SLOTS=[["hero","Hero: photo 1"],["hero-2","Hero: photo 2"],["hero-3","Hero
 SV.forEach(([k,l])=>[1,2,3,4].forEach(n=>SLOTS.push([n===1?k:k+"-"+n,l+": photo "+n])));
 // logo slots: "light" = for light backgrounds (dark artwork), "dark" = for dark backgrounds (light artwork)
 const LOGOS=[["logo-emblem-light","Emblem: for light backgrounds",0],["logo-emblem-dark","Emblem: for dark backgrounds",1],["logo-wordmark-light","Wordmark: for light backgrounds",0],["logo-wordmark-dark","Wordmark: for dark backgrounds",1]];
-// colour theme
-const FIELDS=[["accent","Accent (buttons, links)"],["gold","Highlight"],["bg","Page background"],["card","Cards"],["text","Text"],["hbg","Top bar background"],["hink","Top bar text"]];
-const DEF={light:{accent:"#087F83",gold:"#B59A62",bg:"#EEF6F3",card:"#FFFFFF",text:"#1F3A40",hbg:"#FFFFFF",hink:"#0A0A0A"},
- dark:{accent:"#2BB3B7",gold:"#B59A62",bg:"#06181E",card:"#0B2530",text:"#E3EFEC",hbg:"#000000",hink:"#FFFFFF"}};
-const PRESETS={
- "Ocean (default)":DEF,
- "Sunset":{light:{accent:"#C2410C",gold:"#D99A2B",bg:"#FFF6EC",card:"#FFFFFF",text:"#3B2416",hbg:"#FFFFFF",hink:"#1A0F08"},dark:{accent:"#FB923C",gold:"#F2B84B",bg:"#1A0F0A",card:"#27160E",text:"#F8E9DC",hbg:"#000000",hink:"#FFFFFF"}},
- "Jungle":{light:{accent:"#1E6B45",gold:"#B8893B",bg:"#F1F6EE",card:"#FFFFFF",text:"#1E2D22",hbg:"#FFFFFF",hink:"#0A0A0A"},dark:{accent:"#4ADE80",gold:"#D9A85A",bg:"#08150D",card:"#0F2217",text:"#E6F2E9",hbg:"#000000",hink:"#FFFFFF"}},
- "Coral":{light:{accent:"#D9534F",gold:"#C99A3C",bg:"#FDF3F1",card:"#FFFFFF",text:"#3A2321",hbg:"#FFFFFF",hink:"#0A0A0A"},dark:{accent:"#FF8A80",gold:"#E0B050",bg:"#1B0F0E",card:"#2A1816",text:"#F7E7E5",hbg:"#000000",hink:"#FFFFFF"}},
- "Black & white":{light:{accent:"#111111",gold:"#8A8A8A",bg:"#F5F5F5",card:"#FFFFFF",text:"#111111",hbg:"#FFFFFF",hink:"#000000"},dark:{accent:"#FFFFFF",gold:"#9A9A9A",bg:"#0A0A0A",card:"#161616",text:"#F2F2F2",hbg:"#000000",hink:"#FFFFFF"}}};
 
-if(!window.supabase){document.querySelector("#lerr").textContent="Could not load the Supabase library. Check your internet connection and reload."}
-const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-const $=s=>document.querySelector(s);
-let rows={},theme=JSON.parse(JSON.stringify(DEF));
+const PATS=[["none","None"],["dots","Dots"],["grid","Grid"],["lines","Diagonal lines"],["waves","Waves"],["diamonds","Diamonds"],["plus","Plus signs"],["zigzag","Zigzag"],["bubbles","Bubbles"]];
+const _s=(d,w)=>`<path d="${d}" fill="none" stroke="#000" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+const PATSVG={dots:'<circle cx="20" cy="20" r="2.4"/>',grid:_s("M0 .5H40M.5 0V40",1),lines:_s("M0 40L40 0M-10 10L10 -10M30 50L50 30",1.4),
+ waves:_s("M0 20Q10 6 20 20T40 20",1.6),diamonds:_s("M20 5L35 20L20 35L5 20Z",1.2),plus:_s("M20 13V27M13 20H27",1.8),zigzag:_s("M0 28L10 14L20 28L30 14L40 28",1.4),
+ bubbles:'<circle cx="14" cy="24" r="9" fill="none" stroke="#000" stroke-width="1.3"/><circle cx="33" cy="9" r="4" fill="none" stroke="#000" stroke-width="1.3"/>'};
+const patUrl=n=>PATSVG[n]?`url("data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40">'+PATSVG[n]+'</svg>')}")`:"none";
+const HF={"Kaushan Script":"cursive","Pacifico":"cursive","Lobster":"cursive","Caveat":"cursive","Playfair Display":"serif","Cormorant Garamond":"serif","DM Serif Display":"serif","Poppins":"sans-serif","Montserrat":"sans-serif"};
+const BF={"Montserrat":["sans-serif","400;500;600"],"Inter":["sans-serif","400;500;600"],"Poppins":["sans-serif","400;500;600"],"Nunito":["sans-serif","400;500;600"],"Open Sans":["sans-serif","400;500;600"],"Lato":["sans-serif","400;700"],"Merriweather":["serif","400;700"]};
+const fontHref=(h,b)=>{const f=[];if(h!=="Kaushan Script")f.push("family="+h.replace(/ /g,"+"));if(b!=="Montserrat")f.push("family="+b.replace(/ /g,"+")+":wght@"+BF[b][1]);return f.length?"https://fonts.googleapis.com/css2?"+f.join("&")+"&display=swap":""};
+
+// design theme: colours (light + dark), background pattern, shape, fonts, features
+const clone=o=>JSON.parse(JSON.stringify(o));
+const FIELDS=[["accent","Accent (buttons, links)"],["gold","Highlight"],["bg","Page background"],["bg2","Gradient end color"],["card","Cards"],["text","Text"],["hbg","Top bar background"],["hink","Top bar text"]];
+const DEF={light:{accent:"#087F83",gold:"#B59A62",bg:"#EEF6F3",bg2:"#D8ECE6",card:"#FFFFFF",text:"#1F3A40",hbg:"#FFFFFF",hink:"#0A0A0A"},
+ dark:{accent:"#2BB3B7",gold:"#B59A62",bg:"#06181E",bg2:"#0B2A33",card:"#0B2530",text:"#E3EFEC",hbg:"#000000",hink:"#FFFFFF"}};
+const DD={pattern:"none",pSize:32,pOpacity:8,pColor:"accent",bgType:"solid",angle:160,radius:"orig",shadow:"orig",scale:100,hFont:"Kaushan Script",bFont:"Montserrat",flags:true,kites:true};
+const RANGE={pSize:[12,120],pOpacity:[2,30],angle:[0,360],scale:[90,120]};
+const ALL=()=>({light:clone(DEF.light),dark:clone(DEF.dark),design:clone(DD)});
+const mk=(l,d,x)=>({light:{...DEF.light,...l},dark:{...DEF.dark,...d},design:{...DD,...x}});
+const PRESETS={
+ "Ocean (default)":mk({},{},{}),
+ "Surf waves":mk({},{},{pattern:"waves",pSize:56,pOpacity:8,radius:"6"}),
+ "Sunset glow":mk({accent:"#C2410C",gold:"#D99A2B",bg:"#FFF6EC",bg2:"#FFE3C8",text:"#3B2416",hink:"#1A0F08"},{accent:"#FB923C",gold:"#F2B84B",bg:"#1A0F0A",bg2:"#2E170C",card:"#27160E",text:"#F8E9DC"},{pattern:"dots",pSize:28,pOpacity:9,bgType:"gradient",angle:170,radius:"14",hFont:"Playfair Display"}),
+ "Jungle":mk({accent:"#1E6B45",gold:"#B8893B",bg:"#F1F6EE",bg2:"#DCEBDD",text:"#1E2D22"},{accent:"#4ADE80",gold:"#D9A85A",bg:"#08150D",bg2:"#0E2A18",card:"#0F2217",text:"#E6F2E9"},{pattern:"zigzag",pSize:44,pOpacity:6,radius:"6",hFont:"Cormorant Garamond"}),
+ "Coral bubbles":mk({accent:"#D9534F",gold:"#C99A3C",bg:"#FDF3F1",bg2:"#FBDDD8",text:"#3A2321"},{accent:"#FF8A80",gold:"#E0B050",bg:"#1B0F0E",bg2:"#301816",card:"#2A1816",text:"#F7E7E5"},{pattern:"bubbles",pSize:70,pOpacity:7,radius:"24",hFont:"Pacifico"}),
+ "Black & white":mk({accent:"#111111",gold:"#8A8A8A",bg:"#F5F5F5",bg2:"#E4E4E4",text:"#111111",hink:"#000000"},{accent:"#6B6B6B",gold:"#9A9A9A",bg:"#0A0A0A",bg2:"#1B1B1B",card:"#161616",text:"#F2F2F2"},{pattern:"lines",pSize:24,pOpacity:6,radius:"0",shadow:"none",hFont:"DM Serif Display",bFont:"Inter"})};
+let rows={},theme=ALL();
 
 // setTimeout avoids a known supabase-js deadlock when calling the API inside this callback
 sb.auth.onAuthStateChange((_e,s)=>setTimeout(()=>show(s),0));
@@ -200,20 +236,39 @@ function toWebp(f,max){max=max||MAXW;return new Promise((res,rej)=>{const im=new
     URL.revokeObjectURL(u);c.toBlob(b=>b?res(b):rej(),"image/webp",.82)};
   im.onerror=rej;im.src=u})}
 
-/* ---------- colours ---------- */
+/* ---------- design ---------- */
 const HEX=/^#[0-9a-f]{6}$/i;
-function merge(v){const o=JSON.parse(JSON.stringify(DEF));["light","dark"].forEach(m=>FIELDS.forEach(([k])=>{if(HEX.test(v[m]?.[k]||""))o[m][k]=v[m][k]}));return o}
+function merge(v){const o=ALL();
+  ["light","dark"].forEach(m=>FIELDS.forEach(([k])=>{if(HEX.test(v[m]?.[k]||""))o[m][k]=v[m][k].toUpperCase()}));
+  const d=v.design||{};
+  Object.keys(DD).forEach(k=>{if(!(k in d))return;const x=d[k];
+    if(typeof DD[k]==="boolean")o.design[k]=x!==false;
+    else if(RANGE[k])o.design[k]=Math.min(RANGE[k][1],Math.max(RANGE[k][0],+x||DD[k]));
+    else o.design[k]=String(x)});
+  const D=o.design;
+  if(!PATSVG[D.pattern])D.pattern="none";
+  if(!["accent","gold","text"].includes(D.pColor))D.pColor="accent";
+  if(!["solid","gradient"].includes(D.bgType))D.bgType="solid";
+  if(!["orig","0","6","14","24"].includes(D.radius))D.radius="orig";
+  if(!["orig","none","strong"].includes(D.shadow))D.shadow="orig";
+  if(!HF[D.hFont])D.hFont=DD.hFont;if(!BF[D.bFont])D.bFont=DD.bFont;
+  return o}
 const tmsg=(t,c)=>{const e=$("#tst");e.textContent=t;e.className="st "+(c||"")};
 function lum(h){const c=[1,3,5].map(i=>{const v=parseInt(h.slice(i,i+2),16)/255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});return .2126*c[0]+.7152*c[1]+.0722*c[2]}
 function ratio(a,b){const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)}
+const loaded=new Set();
+function ensureFont(h,b){const u=fontHref(h,b);if(!u||loaded.has(u))return;loaded.add(u);const l=document.createElement("link");l.rel="stylesheet";l.href=u;document.head.append(l)}
+const seg=(k,opts,d)=>`<div class="seg" role="group">${opts.map(([v,l])=>`<button type="button" data-k="${k}" data-v="${v}" aria-pressed="${String(d[k])===v}">${l}</button>`).join("")}</div>`;
+const rng=(k,min,max,step,unit,d)=>`<input type="range" data-k="${k}" min="${min}" max="${max}" step="${step}" value="${d[k]}" aria-label="${k}"><output>${d[k]}${unit}</output>`;
+const opt=(list,v)=>Object.keys(list).map(n=>`<option${n===v?" selected":""}>${n}</option>`).join("");
+
 function buildTheme(){
   const P=$("#presets");P.replaceChildren();
   Object.keys(PRESETS).forEach(n=>{const b=document.createElement("button");b.type="button";b.className="ghost";b.textContent=n;
-    b.onclick=()=>{theme=JSON.parse(JSON.stringify(PRESETS[n]));buildTheme();tmsg("Preset applied. Press Save colors to publish it.")};P.append(b)});
+    b.onclick=()=>{theme=clone(PRESETS[n]);buildTheme();tmsg("Style applied. Press Save design to publish it.")};P.append(b)});
   const T=$("#tcols");T.replaceChildren();
   [["light","Light mode"],["dark","Dark mode"]].forEach(([m,title])=>{
-    const bx=document.createElement("div");bx.className="box";
-    bx.innerHTML=`<h2>${title}</h2>`;
+    const bx=document.createElement("div");bx.className="box";bx.innerHTML=`<h2>Colors: ${title}</h2>`;
     FIELDS.forEach(([k,l])=>{const w=document.createElement("div");w.className="cf";
       w.innerHTML=`<input type="color" value="${theme[m][k].toLowerCase()}" aria-label="${l} (${title})"><label>${l}</label><input type="text" value="${theme[m][k]}" maxlength="7" aria-label="${l} hex (${title})">`;
       const [c,,t]=w.children;
@@ -221,25 +276,58 @@ function buildTheme(){
       c.oninput=()=>set(c.value);
       t.oninput=()=>{let v=t.value.trim();if(v&&v[0]!=="#")v="#"+v;if(HEX.test(v))set(v)};
       bx.append(w)});
-    bx.insertAdjacentHTML("beforeend",`<div class="warn" role="status"></div><div class="mock"><div class="mh"><b>HIRIKETIYO</b><span>Discover</span><span>Surf</span><em>Plan your trip</em></div><div class="mb"><h3>Everything for your trip</h3><div>Sample paragraph text.</div><div class="mc"><span>Surf lesson</span><a>Book now</a></div><div class="gb"></div></div></div>`);
+    bx.insertAdjacentHTML("beforeend",`<div class="warn" role="status"></div><div class="mock"><div class="mp"></div><div class="mh"><b>HIRIKETIYO</b><span>Discover</span><span>Surf</span><em>Plan your trip</em></div><div class="mb"><h3>Everything for your trip</h3><div class="mt">Sample paragraph text.</div><div class="mc"><span>Surf lesson</span><a>Book now</a></div><div class="gb"></div></div></div>`);
     bx.dataset.m=m;T.append(bx)});
+  const d=theme.design,dx=document.createElement("div");dx.className="box wide";
+  dx.innerHTML=`<div class="dg">
+   <div><h3>Background pattern</h3>
+    <div class="pats">${PATS.map(([k,l])=>`<button type="button" class="pt" data-k="pattern" data-v="${k}" aria-pressed="${d.pattern===k}"><i ${k==="none"?'class="no">-':`style='--pm:${patUrl(k)}'>`}</i><span>${l}</span></button>`).join("")}</div>
+    <div class="dr"><label>Pattern size</label><div>${rng("pSize",12,120,2,"px",d)}</div></div>
+    <div class="dr"><label>Pattern strength</label><div>${rng("pOpacity",2,30,1,"%",d)}</div></div>
+    <div class="dr"><label>Pattern color</label><div>${seg("pColor",[["accent","Accent"],["gold","Highlight"],["text","Text"]],d)}</div></div>
+    <div class="dr"><label>Page background</label><div>${seg("bgType",[["solid","Solid"],["gradient","Gradient"]],d)}</div></div>
+    <div class="dr"><label>Gradient angle</label><div>${rng("angle",0,360,5,"°",d)}</div></div>
+   </div>
+   <div><h3>Shape and text</h3>
+    <div class="dr"><label>Corners</label><div>${seg("radius",[["orig","Original"],["0","Square"],["6","Soft"],["14","Rounded"],["24","Very round"]],d)}</div></div>
+    <div class="dr"><label>Card shadow</label><div>${seg("shadow",[["orig","Original"],["none","None"],["strong","Strong"]],d)}</div></div>
+    <div class="dr"><label>Text size</label><div>${rng("scale",90,120,5,"%",d)}</div></div>
+    <h3 style="margin-top:18px">Fonts</h3>
+    <div class="dr"><label>Headings</label><div><select data-k="hFont" aria-label="Heading font">${opt(HF,d.hFont)}</select></div></div>
+    <div class="dr"><label>Body text</label><div><select data-k="bFont" aria-label="Body font">${opt(BF,d.bFont)}</select></div></div>
+    <h3 style="margin-top:18px">Site features</h3>
+    <label class="chk2"><input type="checkbox" data-k="flags"${d.flags?" checked":""}> Show the world-flag line in the top bar</label>
+    <label class="chk2"><input type="checkbox" data-k="kites"${d.kites?" checked":""}> Show the flying kites on the hero photo</label>
+   </div></div>`;
+  T.append(dx);
+  dx.querySelectorAll("[data-k]").forEach(el=>{const k=el.dataset.k;
+    if(el.tagName==="BUTTON")el.onclick=()=>{theme.design[k]=el.dataset.v;dx.querySelectorAll(`button[data-k="${k}"]`).forEach(x=>x.setAttribute("aria-pressed",x===el));paint()};
+    else if(el.type==="range")el.oninput=()=>{theme.design[k]=+el.value;el.nextElementSibling.textContent=el.value+(k==="angle"?"°":k==="pSize"?"px":"%");paint()};
+    else if(el.type==="checkbox")el.onchange=()=>{theme.design[k]=el.checked};
+    else el.onchange=()=>{theme.design[k]=el.value;paint()}});
   paint();
 }
-function paint(){document.querySelectorAll("#tcols .box").forEach(bx=>{const c=theme[bx.dataset.m],m=bx.querySelector(".mock");
-  m.style.cssText=`--a:${c.accent};--g:${c.gold};--b:${c.bg};--c:${c.card};--t:${c.text};--hb:${c.hbg};--hi:${c.hink}`;
-  const w=[];if(ratio(c.text,c.bg)<4.5)w.push("Text is hard to read on the page background.");
-  if(ratio(c.hink,c.hbg)<4.5)w.push("Top bar text is hard to read on the top bar.");
-  if(ratio("#ffffff",c.accent)<3)w.push("White button text is hard to read on the accent colour.");
-  bx.querySelector(".warn").textContent=w.join(" ")})}
+function paint(){const d=theme.design;ensureFont(d.hFont,d.bFont);
+  document.querySelectorAll("#tcols .box[data-m]").forEach(bx=>{const c=theme[bx.dataset.m],m=bx.querySelector(".mock");
+    const bg=d.bgType==="gradient"?`linear-gradient(${d.angle}deg,${c.bg},${c.bg2})`:c.bg;
+    const r=d.radius==="orig"?"4px":d.radius+"px",sh=d.shadow==="none"?"none":d.shadow==="strong"?"0 14px 30px -8px #0006":"0 6px 16px #0a2a3014";
+    m.style.cssText=`--a:${c.accent};--g:${c.gold};--b:${c.bg};--c:${c.card};--t:${c.text};--hb:${c.hbg};--hi:${c.hink};--pc:${c[d.pColor]};--po:${d.pattern==="none"?0:d.pOpacity/100};--ps:${d.pSize}px;--pm:${patUrl(d.pattern)};--r:${r};--sh:${sh};background:${bg};font-size:${13*d.scale/100}px;font-family:'${d.bFont}',${BF[d.bFont][0]}`;
+    m.querySelector("h3").style.fontFamily=`'${d.hFont}',${HF[d.hFont]}`;
+    const w=[];if(ratio(c.text,c.bg)<4.5)w.push("Text is hard to read on the page background.");
+    if(d.bgType==="gradient"&&ratio(c.text,c.bg2)<4.5)w.push("Text is hard to read on the gradient end color.");
+    if(ratio(c.hink,c.hbg)<4.5)w.push("Top bar text is hard to read on the top bar.");
+    if(ratio("#ffffff",c.accent)<3)w.push("White button text is hard to read on the accent color.");
+    if(d.pattern!=="none"&&d.pOpacity>20)w.push("The pattern is strong and may make text harder to read.");
+    bx.querySelector(".warn").textContent=w.join(" ")})}
 $("#tsave").onclick=async e=>{const b=e.target;b.disabled=true;tmsg("Saving...");
   const{error}=await sb.from("site_theme").upsert({key:"theme",value:theme,updated_at:new Date().toISOString()},{onConflict:"key"});
   b.disabled=false;
-  if(error)tmsg("Save failed: "+error.message+". Run the site_theme SQL in Supabase and sign in as the admin.","no");
-  else tmsg("Saved. Reload the live site to see the new colors.","ok")};
-$("#treset").onclick=async()=>{if(!confirm("Go back to the default colors? This removes your saved colors from the live site."))return;
+  if(error)tmsg("Save failed: "+error.message+". Run the site_theme SQL (including the GRANT lines) in Supabase and sign in as the admin.","no");
+  else tmsg("Saved. Reload the live site to see the new design.","ok")};
+$("#treset").onclick=async()=>{if(!confirm("Go back to the original design? This removes your saved design from the live site."))return;
   const{error}=await sb.from("site_theme").delete().eq("key","theme");
   if(error){tmsg("Reset failed: "+error.message,"no");return}
-  theme=JSON.parse(JSON.stringify(DEF));buildTheme();tmsg("Default colors restored.","ok")};
+  theme=ALL();buildTheme();tmsg("Original design restored.","ok")};
 </script>
 </body>
 </html>

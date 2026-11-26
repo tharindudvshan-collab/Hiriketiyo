@@ -428,3 +428,10 @@ header.hd .mobnav a:not(.cta){color:var(--ink)}
 @keyframes fbWave{0%,100%{transform:perspective(90px) rotateY(0) skewY(0)}50%{transform:perspective(90px) rotateY(-16deg) skewY(2.5deg)}}
 @media(max-width:700px){.flagbar{height:22px;margin-top:-.6rem}.flagbar .fg{width:24px;height:16px;margin-right:14px}}
 @media(prefers-reduced-motion:reduce){.flagbar{overflow-x:auto}.flagbar .ft,.flagbar .fg{animation:none}}
+
+/* ===== v32: admin "Design" layers (background gradient + pattern) ===== */
+#hk-bg,#hk-pat{position:fixed;inset:0;z-index:-1;pointer-events:none;display:none}
+html.hk-grad #hk-bg{display:block;background:var(--hk-bgi)}
+html.hk-pat #hk-pat{display:block;background:var(--hk-pc);opacity:var(--hk-po,.08);-webkit-mask:var(--hk-pm) 0 0/var(--hk-ps,32px) repeat;mask:var(--hk-pm) 0 0/var(--hk-ps,32px) repeat}
+/* tinted sections let the pattern show through a little */
+html.hk-pat .sand{background:linear-gradient(180deg,color-mix(in srgb,var(--sand) 86%,transparent),color-mix(in srgb,var(--sand2) 86%,transparent))}
