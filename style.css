@@ -379,3 +379,38 @@ footer .fb1 .lk{display:grid;justify-items:start;width:auto;padding:0;background
 .l3d,.hero-lk .l3d,.lightbox .l3d,footer .l3d,.hd .l3d{width:fit-content}
 .l3d img.nlogo.ex{object-fit:contain}
 .lightbox .l3d{margin-inline:auto}
+
+/* ===== v29: header follows the theme (white in light mode, black in dark mode) + click animations ===== */
+header.hd{--paper:#fff;--ink:#0a0a0a;--line:#0000001f;--hbg:#fff;background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom:1px solid #0000001a;transition:background .3s,border-color .3s}
+body::before{background:#fff}
+/* logo: the artwork is white, so turn it black on the white bar */
+header.hd .l3d img.nlogo,header.hd .wmk{filter:brightness(0)}
+header.hd .l3d{filter:drop-shadow(0 4px 5px #0003)}
+header.hd .l3d img.nlogo.ex{filter:brightness(0) opacity(.55)}
+@media(prefers-color-scheme:dark){
+ :root:not([data-theme=light]) header.hd{--paper:#000;--ink:#fff;--line:#ffffff26;--hbg:#000;background:#000;border-bottom-color:#ffffff1f}
+ :root:not([data-theme=light]) body::before{background:#000}
+ :root:not([data-theme=light]) header.hd .l3d img.nlogo,:root:not([data-theme=light]) header.hd .wmk{filter:none}
+ :root:not([data-theme=light]) header.hd .l3d{filter:drop-shadow(0 6px 8px #0006)}
+ :root:not([data-theme=light]) header.hd .l3d img.nlogo.ex{filter:brightness(.55)}
+}
+:root[data-theme=dark] header.hd{--paper:#000;--ink:#fff;--line:#ffffff26;--hbg:#000;background:#000;border-bottom-color:#ffffff1f}
+:root[data-theme=dark] body::before{background:#000}
+:root[data-theme=dark] header.hd .l3d img.nlogo,:root[data-theme=dark] header.hd .wmk{filter:none}
+:root[data-theme=dark] header.hd .l3d img.nlogo.ex{filter:brightness(.55)}
+header.hd .mobnav{background:color-mix(in srgb,var(--hbg) 94%,transparent)}
+header.hd .mobnav a:not(.cta){color:var(--ink)}
+
+/* click: press + ripple + underline bar grows under the active link */
+.nl a:not(.cta),.mobnav a:not(.cta){overflow:hidden;transition:transform .2s cubic-bezier(.34,1.56,.64,1),color .2s}
+.nl a:not(.cta):active,.mobnav a:not(.cta):active{transform:scale(.92)}
+.nl a:not(.cta)::before{content:"";position:absolute;left:18%;right:18%;bottom:.15rem;height:2px;border-radius:2px;background:var(--teal);transform:scaleX(0);transform-origin:left;transition:transform .45s cubic-bezier(.22,1,.36,1)}
+.nl a[aria-current=page]:not(.cta)::before{transform:scaleX(1)}
+.fx-rip{position:absolute;border-radius:50%;background:var(--teal);opacity:.35;transform:scale(0);pointer-events:none;animation:fxRip .6s ease-out forwards}
+@keyframes fxRip{to{transform:scale(1);opacity:0}}
+.nl a.cta:active,.mobnav a.cta:active{animation:fxPop .35s cubic-bezier(.34,1.56,.64,1)}
+@keyframes fxPop{40%{transform:perspective(600px) translateY(3px) scale(.94)}}
+/* the page you open slides in */
+.page.on.fx-in{animation:fxPage .55s cubic-bezier(.22,1,.36,1)}
+@keyframes fxPage{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.fx-rip{display:none}.page.on.fx-in,.nl a.cta:active,.mobnav a.cta:active{animation:none}.nl a:active,.mobnav a:active{transform:none}}

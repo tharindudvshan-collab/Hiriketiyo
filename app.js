@@ -20,3 +20,11 @@ addEventListener('keydown',e=>{if(e.key==='Escape'){document.getElementById('mob
 
 // service catalog filter
 document.querySelectorAll('.cat-filter button').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.k;document.querySelectorAll('.cat-filter button').forEach(x=>x.setAttribute('aria-pressed',x===b));document.querySelectorAll('.svc').forEach(c=>{const on=k==='all'||c.dataset.c===k;c.hidden=!on;if(on){c.style.animation='none';c.offsetWidth;c.style.animation=''}})}));
+
+// nav click animation: ripple on the pressed link + the new page slides in
+document.querySelectorAll('.nl a,.mobnav a,.logo').forEach(a=>a.addEventListener('pointerdown',e=>{
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches||a.classList.contains('cta')||a.classList.contains('logo'))return;
+  const r=a.getBoundingClientRect(),d=Math.max(r.width,r.height)*2,s=document.createElement('span');
+  s.className='fx-rip';s.style.cssText=`width:${d}px;height:${d}px;left:${e.clientX-r.left-d/2}px;top:${e.clientY-r.top-d/2}px`;
+  a.append(s);s.addEventListener('animationend',()=>s.remove())}));
+addEventListener('hashchange',()=>{const p=document.querySelector('.page.on');if(!p)return;p.classList.remove('fx-in');void p.offsetWidth;p.classList.add('fx-in')});
