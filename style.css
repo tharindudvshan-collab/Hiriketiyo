@@ -414,3 +414,17 @@ header.hd .mobnav a:not(.cta){color:var(--ink)}
 .page.on.fx-in{animation:fxPage .55s cubic-bezier(.22,1,.36,1)}
 @keyframes fxPage{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.fx-rip{display:none}.page.on.fx-in,.nl a.cta:active,.mobnav a.cta:active{animation:none}.nl a:active,.mobnav a:active{transform:none}}
+
+/* ===== v31: live world-flag line in the top bar ===== */
+.flagbar{grid-column:1/-1;position:relative;overflow:hidden;height:26px;margin:-.5rem 0 -.05rem;display:flex;align-items:center;
+ -webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+.flagbar .ft{display:flex;width:max-content;animation:fbRun var(--fbd,120s) linear infinite;will-change:transform}
+.flagbar:hover .ft{animation-play-state:paused}
+.flagbar .fg{position:relative;flex:none;width:30px;height:20px;margin-right:20px;border-radius:3px;overflow:hidden;box-shadow:0 1px 3px #0005,0 0 0 1px #0002;
+ transform-origin:left center;animation:fbWave 3.2s ease-in-out infinite;animation-delay:calc(var(--i,0)*-.37s)}
+.flagbar .fg svg{display:block;width:100%;height:100%}
+.flagbar .fg::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,#ffffff59 0,#fff0 38%,#0000 58%,#00000033 100%)}
+@keyframes fbRun{to{transform:translateX(-50%)}}
+@keyframes fbWave{0%,100%{transform:perspective(90px) rotateY(0) skewY(0)}50%{transform:perspective(90px) rotateY(-16deg) skewY(2.5deg)}}
+@media(max-width:700px){.flagbar{height:22px;margin-top:-.6rem}.flagbar .fg{width:24px;height:16px;margin-right:14px}}
+@media(prefers-reduced-motion:reduce){.flagbar{overflow-x:auto}.flagbar .ft,.flagbar .fg{animation:none}}
