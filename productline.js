@@ -1,6 +1,6 @@
 /* HIRIKETIYO product line: a slow, endlessly running band of the products added in the Shopping area.
    It sits in the middle of whichever page (tab) is open and moves with the visitor from page to page.
-   It shows ONLY real products (Supabase `listings`, kind = 'product', loaded once by shop.js as window.hkProducts).
+   It shows ONLY real products (added in Admin Studio > Products, plus partner products in Supabase `listings`; loaded once by shop.js as window.hkProducts).
    While there are none, the strip stays hidden. It is not shown on the Shopping page itself (the full grid is there).
    Clicking a product opens its detail dialog (window.hkShop). Reduced-motion visitors get a calm, swipeable row. */
 (()=>{
@@ -51,7 +51,7 @@ track.addEventListener('click',e=>{const a=e.target.closest('[data-pid]');
 
 (window.hkProducts||Promise.resolve([])).then(list=>{
   if(!list.length)return;
-  current=list.map(l=>({id:l.id,n:l.title,img:l.image_url||'',p:LKR(l.price_cents)}));
+  current=list.map(l=>({id:l.id,n:l.title,img:l.image_url||'',p:l.price_cents>0?LKR(l.price_cents):'Ask for price'}));
   build(current);place();
 });
 })();

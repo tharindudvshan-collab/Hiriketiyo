@@ -144,6 +144,20 @@ h2.sec{font-size:1rem;margin:2px 0 10px}
   .scroll{padding-bottom:80px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+/* shop products + payment tabs */
+input[type=number]{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.sh-b{padding:0 12px 12px}.sh-b label{display:block;margin:10px 0 4px;font-size:.88rem}
+.sh-two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sh-imgs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px}
+.sh-pi{display:flex;flex-direction:column;gap:6px;min-width:0}.sh-pi input[type=file]{font-size:.75rem;width:100%}.sh-pi button{padding:5px 8px;font-size:.8rem}
+.sh-pv{aspect-ratio:1;border:1px dashed var(--line);border-radius:8px;display:grid;place-items:center;overflow:hidden;font-size:.76rem;color:var(--mut);background:var(--bg)}
+.sh-pv img{width:100%;height:100%;object-fit:cover;display:block}
+.sh-cb{display:flex!important;align-items:center;gap:8px}.sh-cb input{width:auto}
+.sh-b .row{margin-top:12px;flex-wrap:wrap}
+.sh-top{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap}.sh-top button{flex:0 0 auto}
+.sh-pm{margin-bottom:12px}.sh-pm label{display:block;margin:8px 0 4px;font-size:.88rem}
+#shoplist details.grp summary{display:flex;justify-content:space-between;gap:8px;padding:11px 12px;cursor:pointer}
+#shoplist details.grp summary small{color:var(--mut);white-space:nowrap}
 </style>
 </head>
 <body>
@@ -177,6 +191,8 @@ h2.sec{font-size:1rem;margin:2px 0 10px}
       <div class="tabs" role="tablist" aria-label="Editor sections">
         <button type="button" role="tab" data-t="content" aria-selected="true">Text &amp; links</button>
         <button type="button" role="tab" data-t="photos" aria-selected="false">Photos</button>
+        <button type="button" role="tab" data-t="shop" aria-selected="false">Products</button>
+        <button type="button" role="tab" data-t="pay" aria-selected="false">Payment</button>
         <button type="button" role="tab" data-t="logo" aria-selected="false">Logo</button>
         <button type="button" role="tab" data-t="colors" aria-selected="false">Design</button>
         <button type="button" role="tab" data-t="adv" aria-selected="false">Advanced</button>
@@ -205,6 +221,17 @@ h2.sec{font-size:1rem;margin:2px 0 10px}
           <div class="presets" id="presets"></div>
           <div class="cols" id="tcols"></div>
           <div class="presets" style="margin-top:14px"><button type="button" class="ghost" id="treset">Back to the original design</button></div>
+        </div>
+
+        <div class="panel" id="p-shop">
+          <div class="help"><b>Products for the Shopping page.</b> Add a product with its name, price (LKR), description and up to 3 photos, then press <b>Save product</b>. It goes live straight away (no need to press Publish). Switch <b>Show on the website</b> off to hide a product without deleting it. Use ↑ ↓ to change the order.</div>
+          <div class="sh-top"><button type="button" id="shopadd">+ Add product</button><span class="mut" id="shopcount"></span></div>
+          <div id="shoplist"></div>
+        </div>
+
+        <div class="panel" id="p-pay">
+          <div class="help"><b>Payment options.</b> Choose how customers can pay for the products you add here. They pick one in the product window, and the choice is included in their order message. Only ticked options are shown. Do not type account numbers here unless you are happy for every visitor to see them. Partner products that already use the secure card checkout are not affected.</div>
+          <div id="paybox"></div>
         </div>
 
         <div class="panel" id="p-adv">
@@ -347,7 +374,7 @@ async function loadDefaults(){
 async function boot(){
   pv.src="index.html?hkpreview=1#"+$("#pgsel").value;
   await loadDefaults();
-  build();buildTheme();buildContent();fit();
+  build();buildTheme();buildContent();fit();loadShop();
   const [im,tr]=await Promise.all([sb.from("site_images").select("*"),sb.from("site_theme").select("key,value").in("key",["theme","content"])]);
   if(im.error)toast("Could not load images: "+im.error.message+". Run the Supabase SQL (site_images table) first.","no");
   rows=Object.fromEntries((im.data||[]).map(r=>[r.slot,r]));build();
@@ -611,6 +638,91 @@ function paint(){const d=theme.design;ensureFont(d.hFont,d.bFont);
     $(".warn",bx).textContent=w.join(" ")});
   changed()}
 $("#treset").onclick=()=>{if(!confirm("Put the colors, pattern and fonts back to the original design?"))return;theme=ALL();buildTheme();toast("Original design is in the preview. Press Publish to make it live.","ok")};
+
+/* ---------------- SHOP: products + payment options (saved in site_theme, keys "shop" and "payment") ---------------- */
+const lkr=n=>"LKR "+(+n||0).toLocaleString("en-LK",{minimumFractionDigits:2,maximumFractionDigits:2});
+const uid=()=>"p"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const PMS=[["whatsapp","Order on WhatsApp","Send your order on WhatsApp. We confirm availability, the total and how to pay."],["bank","Bank transfer","",],["cod","Pay on delivery or pickup",""],["other","Another option",""]];
+let SHOP={items:[]},PAY=null;const openS=new Set();
+const payDef=()=>({wa:"94717505506",info:"",methods:Object.fromEntries(PMS.map(([k,l,n])=>[k,{on:k==="whatsapp",label:k==="other"?"":l,note:n||""}]))});
+const saveKey=(key,value)=>sb.from("site_theme").upsert([{key,value,updated_at:new Date().toISOString()}],{onConflict:"key"});
+const saveShop=()=>saveKey("shop",{items:SHOP.items.filter(x=>!x._new).map(x=>{const{_new,...r}=x;return r})});
+async function loadShop(){
+  const r=await sb.from("site_theme").select("key,value").in("key",["shop","payment"]);
+  if(r.error)toast("Could not load products: "+r.error.message,"no");
+  const g=k=>((r.data||[]).find(x=>x.key===k)||{}).value;
+  const s=g("shop");SHOP={items:Array.isArray(s&&s.items)?s.items.filter(x=>x&&x.id):[]};
+  const d=payDef(),p=g("payment")||{};PAY={wa:String(p.wa||d.wa),info:String(p.info||""),methods:{}};
+  PMS.forEach(([k])=>{const m=(p.methods||{})[k];PAY.methods[k]=m?{on:!!m.on,label:String(m.label||""),note:String(m.note||"")}:d.methods[k]});
+  buildShop();buildPay()}
+function buildShop(){
+  const L=$("#shoplist");L.replaceChildren();
+  $("#shopcount").textContent=SHOP.items.filter(x=>!x._new).length+" saved";
+  if(!SHOP.items.length)L.innerHTML='<p class="mut">No products yet. Press <b>+ Add product</b>.</p>';
+  SHOP.items.forEach(p=>L.append(prodCard(p)))}
+$("#shopadd").onclick=()=>{if(!SHOP.items.some(x=>x._new))SHOP.items.push({id:uid(),title:"",price:0,status:"in",cat:"",desc:"",imgs:[],show:true,_new:true});buildShop();const d=$("#shoplist details:last-child");if(d){d.open=true;d.scrollIntoView({block:"center"})}};
+function prodCard(p){
+  const d=document.createElement("details");d.className="grp";d.open=openS.has(p.id)||!!p._new;d.ontoggle=()=>d.open?openS.add(p.id):openS.delete(p.id);
+  const urls=(p.imgs||[]).slice(0,3);while(urls.length<3)urls.push(null);const stage=[null,null,null];
+  const opt=(v,a)=>a.map(([k,l])=>`<option value="${k}"${k===v?" selected":""}>${l}</option>`).join("");
+  d.innerHTML=`<summary><span>${esc(p.title||"New product (not saved yet)")}</span><small>${p.show===false?"Hidden · ":""}${p._new?"":lkr(p.price)}</small></summary><div class="sh-b">
+    <label>Product name<input type="text" class="f-t" maxlength="80" value="${esc(p.title)}"></label>
+    <div class="sh-two"><label>Price (LKR)<input type="number" class="f-p" min="0" step="0.01" value="${p.price||""}" placeholder="e.g. 2500"></label>
+    <label>Availability<select class="f-s">${opt(p.status||"in",[["in","In stock"],["order","Made to order"],["out","Sold out"]])}</select></label></div>
+    <label>Category (optional, e.g. Batik)<input type="text" class="f-c" maxlength="40" value="${esc(p.cat||"")}"></label>
+    <label>Description<textarea class="f-d" maxlength="1500" placeholder="Material, size, who made it, care instructions...">${esc(p.desc||"")}</textarea></label>
+    <label>Photos (the first is the main photo)</label><div class="sh-imgs"></div>
+    <label class="sh-cb"><input type="checkbox" class="f-v"${p.show===false?"":" checked"}> Show on the website</label>
+    <div class="row"><button type="button" class="save">Save product</button><button type="button" class="ghost up" aria-label="Move up">↑</button><button type="button" class="ghost dn" aria-label="Move down">↓</button><button type="button" class="ghost rm">Delete</button></div>
+    <div class="st" role="status"></div></div>`;
+  const st=$(".st",d),msg=(t,c)=>{st.textContent=t;st.className="st "+(c||"")},box=$(".sh-imgs",d);
+  const draw=()=>{box.replaceChildren();[0,1,2].forEach(k=>{
+    const w=document.createElement("div");w.className="sh-pi";const src=stage[k]?stage[k].url:urls[k];
+    w.innerHTML=`<div class="sh-pv">${src?`<img src="${esc(src)}" alt="">`:"No photo"}</div><input type="file" accept="image/*" aria-label="Photo ${k+1}"><button type="button" class="ghost"${src?"":" disabled"}>Remove</button>`;
+    $("input",w).onchange=async e=>{const f=e.target.files[0];if(!f)return;msg("Preparing image...");
+      try{const blob=await toWebp(f,1600);stage[k]={blob,url:URL.createObjectURL(blob)};draw();msg("")}catch(x){msg("Could not read that image.","no")}};
+    $("button",w).onclick=()=>{stage[k]=null;urls[k]=null;draw()};box.append(w)})};
+  draw();
+  $(".save",d).onclick=async e=>{const b=e.target;
+    const title=$(".f-t",d).value.trim(),pr=parseFloat($(".f-p",d).value);
+    if(!title){msg("Enter the product name.","no");return}
+    if(!isFinite(pr)||pr<0){msg("Enter a valid price in LKR (0 shows \"Ask for price\").","no");return}
+    b.disabled=true;msg("Saving...");
+    try{const out=[];
+      for(let k=0;k<3;k++){let u=urls[k];
+        if(stage[k]){const path=`shop-${p.id}-${Date.now()}-${k}.webp`;
+          const up=await sb.storage.from(BUCKET).upload(path,stage[k].blob,{contentType:"image/webp",cacheControl:"31536000"});
+          if(up.error)throw up.error;u=sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl}
+        if(u)out.push(u)}
+      Object.assign(p,{title,price:Math.round(pr*100)/100,status:$(".f-s",d).value,cat:$(".f-c",d).value.trim(),desc:$(".f-d",d).value.trim(),show:$(".f-v",d).checked,imgs:out});delete p._new;
+      const r=await saveShop();if(r.error)throw r.error;
+      openS.add(p.id);buildShop();toast("Product saved. The live Shopping page now shows it.","ok");$("#reload").click()
+    }catch(x){msg("Save failed: "+(x.message||"unknown error")+". Make sure you are signed in as the admin email.","no");b.disabled=false}};
+  const mv=async dir=>{const i=SHOP.items.indexOf(p),j=i+dir;if(j<0||j>=SHOP.items.length)return;
+    [SHOP.items[i],SHOP.items[j]]=[SHOP.items[j],SHOP.items[i]];openS.add(p.id);
+    const r=await saveShop();if(r.error)toast("Could not save the order: "+r.error.message,"no");buildShop();$("#reload").click()};
+  $(".up",d).onclick=()=>mv(-1);$(".dn",d).onclick=()=>mv(1);
+  $(".rm",d).onclick=async()=>{if(!confirm(p._new?"Discard this new product?":"Delete this product from the shop?"))return;
+    SHOP.items=SHOP.items.filter(x=>x!==p);
+    if(!p._new){const r=await saveShop();if(r.error){toast("Delete failed: "+r.error.message,"no");await loadShop();return}toast("Product deleted.","ok");$("#reload").click()}
+    buildShop()};
+  return d}
+function buildPay(){
+  const box=$("#paybox");if(!PAY)return;
+  box.innerHTML=`<div class="box sh-pm"><label for="pay-wa">WhatsApp number for orders (country code first, digits only)</label><input type="text" id="pay-wa" inputmode="numeric" maxlength="15" value="${esc(PAY.wa)}" placeholder="94717505506"></div>`+
+    PMS.map(([k,l])=>{const m=PAY.methods[k];return `<div class="box sh-pm" data-k="${k}"><label class="sh-cb"><input type="checkbox" class="pm-on"${m.on?" checked":""}> <b>${esc(l)}</b></label>
+      <label>Name shown to customers<input type="text" class="pm-l" maxlength="60" value="${esc(m.label)}" placeholder="${k==="other"?"e.g. Pay at the shop":""}"></label>
+      <label>Instructions shown to customers<textarea class="pm-n" maxlength="800" placeholder="${k==="bank"?"Bank, account name and what to write in the payment reference":"What the customer should do"}">${esc(m.note)}</textarea></label></div>`}).join("")+
+    `<div class="box sh-pm"><label for="pay-info">Message shown under every product (delivery areas, delivery time, returns...)</label><textarea id="pay-info" maxlength="800">${esc(PAY.info)}</textarea></div>
+    <div class="row"><button type="button" id="pay-save">Save payment options</button></div><div class="st" id="pay-st" role="status"></div>`;
+  $("#pay-save").onclick=async e=>{const b=e.target,st=$("#pay-st"),wa=$("#pay-wa").value.replace(/\D/g,"");
+    if(wa.length<9){st.textContent="Enter the WhatsApp number with the country code, digits only.";st.className="st no";return}
+    const methods={};$$("#paybox .box[data-k]").forEach(x=>{methods[x.dataset.k]={on:$(".pm-on",x).checked,label:$(".pm-l",x).value.trim(),note:$(".pm-n",x).value.trim()}});
+    if(methods.other.on&&!methods.other.label){st.textContent="Give the extra option a name, or untick it.";st.className="st no";return}
+    b.disabled=true;st.textContent="Saving...";st.className="st";
+    const v={wa,info:$("#pay-info").value.trim(),methods},r=await saveKey("payment",v);b.disabled=false;
+    if(r.error){st.textContent="Save failed: "+r.error.message+". Make sure you are signed in as the admin email.";st.className="st no";return}
+    PAY=v;st.textContent="Saved. The Shopping page now shows these options.";st.className="st ok";$("#reload").click()}}
 </script>
 </body>
 </html>
