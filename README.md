@@ -70,7 +70,7 @@ hiriketiyo/
 - Upload together: `index.html`, `style.css`, `trip.js`, `sw.js`, `content-map.js`.
 
 ## Main navigation (6 buttons)
-- Top bar / phone menu: 01 Discover (`#discover`), 02 Experiences (`#surf`), 03 Stay & Eat (`#stay`), 04 Destinations (`#destinations`), 05 Local Products (`#shop`), 06 Plan Your Trip (`#plan`, the pill button). The logo goes Home; Transport stays reachable from the footer and the Discover page.
+- Top bar / phone menu: 01 Discover (`#discover`), 02 Experiences (`#surf`), 03 Stay & Eat (`#stay`), 04 Destinations (`#destinations`), 05 Shopping (`#shop`), 06 Plan Your Trip (`#plan`, the pill button). The logo goes Home; Transport stays reachable from the footer and the Discover page.
 - `#destinations` and `#plan` are not pages: `app.js` (`AL` list) opens the Discover page and scrolls to `#d-places`, or opens the Experiences page and scrolls to the trip planner `#tp`.
 - Each item has an icon (inline SVG, 1.5 stroke), a number and a one-line description (hover card on desktop, shown in the phone menu). All texts are editable in Admin Studio > Top bar & menus.
 - Below 1320px wide the bar becomes the phone menu (six items would not fit).
