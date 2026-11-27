@@ -233,7 +233,7 @@ h2.sec{font-size:1rem;margin:2px 0 10px}
       <div class="stool">
         <label class="mut" for="pgsel">Page</label>
         <select id="pgsel">
-          <option value="home">Home</option><option value="discover">Discover</option><option value="surf">Surf &amp; Experiences</option>
+          <option value="home">Home</option><option value="discover">Discover</option><option value="surf">Experiences</option><option value="trip">Plan your trip</option>
           <option value="partner">Partner form</option><option value="stay">Stay &amp; Eat</option><option value="transport">Transport</option><option value="shop">Shop</option>
         </select>
         <div class="seg" role="group" aria-label="Device">
@@ -276,7 +276,8 @@ const BUCKET="site-images",MAXW=2560,ORIGIN=location.origin==="null"?"*":locatio
 const SV=[["svc-surf","Surf lessons"],["svc-stay","Places to stay"],["svc-food","Food and drink"],["svc-ride","Tuk-tuk and transfers"],["svc-exp","Local experiences"],["svc-shop","Shop HIRIKETIYO"]];
 const DS=[["disc-hero", "Discover: top banner"], ["disc-bay", "Discover: The bay"], ["disc-surf", "Discover: Surf"], ["disc-life", "Discover: Local life"], ["disc-food", "Discover: Food"], ["disc-nature", "Discover: Nature"], ["disc-culture", "Discover: Culture"], ["disc-slow", "Discover: Slow down"], ["disc-p1", "Discover place 1: Blue Beach Island – Nilwella"], ["disc-p2", "Discover place 2: Hummanaya Blowhole – Kudawella"], ["disc-p3", "Discover place 3: Dondra Lighthouse – Dondra, Matara"], ["disc-p4", "Discover place 4: Turtle Point – Bathigama"], ["disc-p5", "Discover place 5: Mulkirigala Rock Temple – Mulkirigala"], ["disc-p6", "Discover place 6: Rekawa Beach – Tangalle"], ["disc-p7", "Discover place 7: Mawella Beach – Tangalle"], ["disc-p8", "Discover place 8: Silent Beach – Tangalle"]];
 const DOS=[["do-hero","DO HIRIKETIYO: top banner"],["do-surf","DO HIRIKETIYO: Surf and Ocean"],["do-wellness","DO HIRIKETIYO: Wellness and Fitness"],["do-food","DO HIRIKETIYO: Food and Culinary"],["do-tours","DO HIRIKETIYO: Tours and Adventures"],["do-spa","DO HIRIKETIYO: Spa and Relaxation"],["do-rentals","DO HIRIKETIYO: Rentals and Equipment"],["do-creative","DO HIRIKETIYO: Creative and Lifestyle"],["do-events","DO HIRIKETIYO: Events and Special Experiences"]];
-const PG=[["Hero (top of the home page)","hero"],["About HIRIKETIYO","bay"],...SV.map(([k,l])=>["Service card: "+l,k]),...DS.map(([k,l])=>[l,k]),...DOS.map(([k,l])=>[l,k])];
+const EXS=[["exp-hero","Experiences: top banner"],["exp-l1","Experiences: Surf culture"],["exp-l2","Experiences: Beach life"],["exp-l3","Experiences: Tropical cafés"],["exp-l4","Experiences: Sunsets"],["exp-ocean","Experiences: Ocean"],["exp-wellness","Experiences: Wellness"],["exp-food","Experiences: Food"],["exp-adventure","Experiences: Adventure"],["exp-night","Experiences: Nightlife"],["exp-creative","Experiences: Creativity"],["exp-beyond","Experiences: Beyond Hiriketiya"],["exp-c1","Experiences: Culture, photo 1"],["exp-c2","Experiences: Culture, photo 2"]];
+const PG=[["Hero (top of the home page)","hero"],["About HIRIKETIYO","bay"],...SV.map(([k,l])=>["Service card: "+l,k]),...DS.map(([k,l])=>[l,k]),...DOS.map(([k,l])=>[l,k]),...EXS.map(([k,l])=>[l,k])];
 const slotsOf=b=>[1,2,3,4].map(n=>[n===1?b:b+"-"+n,"Photo "+n]);
 const LOGOS=[["logo-emblem-light","Emblem: for light backgrounds",0],["logo-emblem-dark","Emblem: for dark backgrounds",1],["logo-wordmark-light","Wordmark: for light backgrounds",0],["logo-wordmark-dark","Wordmark: for dark backgrounds",1]];
 

@@ -1,6 +1,6 @@
 /* HIRIKETIYO slideshows (loads after data.js).
    Every photo slot can hold up to 4 photos (slot, slot-2, slot-3, slot-4), uploaded in admin.html > Photos.
-   Covered: hero, "About" photo, the 6 service cards, the Discover banner, the 7 Discover chapters and the 8 place cards.
+   Covered: hero, "About" photo, the Experiences page (exp-*), the 6 service cards, the Discover banner, the 7 Discover chapters and the 8 place cards.
    Empty slots are skipped, so 1 to 4 photos all work. A slideshow only runs while it is on screen.
    Reduced-motion visitors still get the next photo, but as a plain swap (no fade) and more slowly. */
 (()=>{
@@ -53,7 +53,7 @@ if(hero)start(hero,'hero',SEC);
 const bay=document.querySelector('img.photo[data-slot="bay"]');
 if(bay){const p=bay.closest('picture');if(p)p.classList.add('ss-wrap');start(bay,'bay',SEC-700)}
 
-document.querySelectorAll('img[data-slot^="svc-"],img[data-slot^="disc-"],img[data-slot^="do-"]').forEach(img=>{
+document.querySelectorAll('img[data-slot^="svc-"],img[data-slot^="disc-"],img[data-slot^="do-"],img[data-slot^="exp-"]').forEach(img=>{
   if(img.classList.contains('ss-x')||/-[2-4]$/.test(img.dataset.slot))return;
   start(img,img.dataset.slot,4500+((k++)%8)*500);
 });

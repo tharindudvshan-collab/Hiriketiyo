@@ -71,7 +71,7 @@ hiriketiyo/
 
 ## Main navigation (6 buttons)
 - Top bar / phone menu: 01 Discover (`#discover`), 02 Experiences (`#surf`), 03 Stay & Eat (`#stay`), 04 Destinations (`#destinations`), 05 Shopping (`#shop`), 06 Plan Your Trip (`#plan`, the pill button). The logo goes Home; Transport stays reachable from the footer and the Discover page.
-- `#destinations` and `#plan` are not pages: `app.js` (`AL` list) opens the Discover page and scrolls to `#d-places`, or opens the Experiences page and scrolls to the trip planner `#tp`.
+- `#destinations` and `#plan` are not pages: `app.js` (`AL` list) opens the Discover page and scrolls to `#d-places`, or opens the Plan your trip page (`#trip`) and scrolls to the trip planner `#tp`. `#partner` also opens `#trip` (menu stays on 02 Experiences).
 - Each item has an icon (inline SVG, 1.5 stroke), a number and a one-line description (hover card on desktop, shown in the phone menu). All texts are editable in Admin Studio > Top bar & menus.
 - Below 1320px wide the bar becomes the phone menu (six items would not fit).
 - Upload together: `index.html`, `style.css`, `app.js`, `content-map.js`, `sw.js` (VERSION `hiriketiyo-v36`).
@@ -87,3 +87,12 @@ hiriketiyo/
 - Optional columns for richer listings: `supabase-do-marketplace.sql` (review and run it yourself). Without it the cards still work with the basic fields.
 - Photo slots (Admin > Photos, up to 4 each): `do-hero`, `do-surf`, `do-wellness`, `do-food`, `do-tours`, `do-spa`, `do-rentals`, `do-creative`, `do-events`. Texts: Admin Studio > Page: DO HIRIKETIYO.
 - Upload together: `index.html`, `style.css`, `app.js`, `data.js`, `do.js`, `slideshow.js`, `content-map.js`, `admin.html`, `sw.js` (VERSION `hiriketiyo-v41`).
+
+## Experiences page (`#surf`, short cinematic editorial)
+- Six sections only, in the Discover look: hero "Experience the South", `#x-life` coastal lifestyle (photo mosaic), `#x-things` six things to experience (Ocean, Wellness, Food, Adventure, Nightlife, Creativity), `#x-beyond` nearby beaches / landmarks / hidden gems (names only, distances stay in Discover), `#x-culture` local culture and flavours, `#x-cta` "Your Hiriketiya Story Starts Here." with the DO HIRIKETIYO button.
+- Role of each page: Discover = destination information, Experiences = lifestyle and inspiration, DO HIRIKETIYO = bookable activities and services.
+- **The old content of this page moved to a new page `#trip` ("Plan Your Trip")**: trip planner `#tp`, surf/experience listings, booking request form and the partner application `#partner`. Nothing in them changed; `app.js` (`P` and `AL`) routes the Plan Your Trip pill and every `#partner` link there.
+- Photo slots (Admin > Photos, up to 4 each): `exp-hero`, `exp-l1`..`exp-l4`, `exp-ocean`, `exp-wellness`, `exp-food`, `exp-adventure`, `exp-night`, `exp-creative`, `exp-beyond`, `exp-c1`, `exp-c2`. Slots with no photo show a tinted placeholder; a few start with existing site images until real photos are uploaded.
+- Texts: Admin Studio > Page: Experiences. Planner, listings and partner texts: Page: Plan your trip.
+- Styles are the `.x*` block at the end of `style.css`; reveal-on-scroll for `#surf` is at the end of `app.js`.
+- Upload together: `index.html`, `style.css`, `app.js`, `slideshow.js`, `content-map.js`, `admin.html`, `sw.js` (VERSION `hiriketiyo-v42`).

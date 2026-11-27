@@ -126,14 +126,47 @@ add(GDO,{k:'do.eh',l:'Closing heading',s:'#do .do-end h3'});
 add(GDO,{k:'do.ep',l:'Closing text',s:'#do .do-end p',t:'long'});
 add(GDO,{k:'do.eb',l:'Closing button',s:'#do .do-end a.btn'});
 
-const G9='Page: Surf & Experiences';ph('surf',G9);
-add(G9,{k:'surf.lh',l:'Listings heading',s:'#surf .split>div:nth-child(1)>h3'});
-add(G9,{k:'surf.empty',l:'Message when no listings yet',s:'#surf .card.empty p',t:'long'});
-add(G9,{k:'surf.fh',l:'Booking form heading',s:'#surf .split>div:nth-child(2)>h3'});
-add(G9,{k:'surf.fb',l:'Booking form button',s:'#surf form[data-kind="Booking request"] button'});
+const GX='Page: Experiences';
+add(GX,{k:'x.h',l:'Hero: title',s:'#surf .xhero h2'});
+add(GX,{k:'x.sub',l:'Hero: sentence under the title',s:'#surf .xhero p'});
+add(GX,{k:'x.hb',l:'Hero: button',s:'#surf .xhero .box'});
+add(GX,{k:'x.life.h',l:'Coastal life: heading',s:'#x-life h2'});
+add(GX,{k:'x.life.p',l:'Coastal life: line',s:'#x-life .xh p'});
+[1,2,3,4].forEach(n=>add(GX,{k:'x.life.c'+n,l:'Coastal life: photo label '+n,s:`#x-life .xm${n} .dtag`}));
+add(GX,{k:'x.th.h',l:'Things to experience: heading',s:'#x-things h2'});
+add(GX,{k:'x.th.p',l:'Things to experience: line',s:'#x-things .xh p'});
+for(let n=1;n<=6;n++){
+  add(GX,{k:'x.th.'+n+'t',l:'Experience '+n+': title',s:`#x-things .xt:nth-child(${n}) h3`});
+  add(GX,{k:'x.th.'+n+'s',l:'Experience '+n+': short line',s:`#x-things .xt:nth-child(${n}) p`,t:'long'});
+}
+add(GX,{k:'x.by.h',l:'Beyond Hiriketiya: heading',s:'#x-beyond h2'});
+add(GX,{k:'x.by.p',l:'Beyond Hiriketiya: intro',s:'#x-beyond .xbt>p',t:'long'});
+for(let n=1;n<=3;n++){
+  add(GX,{k:'x.by.g'+n,l:'Beyond: group '+n+' title',s:`#x-beyond .xgrp:nth-child(${n}) dt`});
+  add(GX,{k:'x.by.n'+n,l:'Beyond: group '+n+' places',s:`#x-beyond .xgrp:nth-child(${n}) dd`,t:'long'});
+}
+add(GX,{k:'x.by.b',l:'Beyond: button',s:'#x-beyond .dbtn'});
+add(GX,{k:'x.by.bh',l:'Beyond: button link',s:'#x-beyond .dbtn',t:'attr',a:'href'});
+add(GX,{k:'x.cu.h',l:'Culture: heading',s:'#x-culture h2'});
+add(GX,{k:'x.cu.q',l:'Culture: quote',s:'#x-culture .dq'});
+for(let n=1;n<=4;n++){
+  add(GX,{k:'x.cu.'+n+'t',l:'Culture '+n+': title',s:`#x-culture .xfl li:nth-child(${n}) b`});
+  add(GX,{k:'x.cu.'+n+'s',l:'Culture '+n+': short line',s:`#x-culture .xfl li:nth-child(${n}) span`,t:'long'});
+}
+add(GX,{k:'x.cta.h',l:'Closing: heading',s:'#x-cta h2'});
+add(GX,{k:'x.cta.p',l:'Closing: line',s:'#x-cta p'});
+add(GX,{k:'x.cta.b',l:'Closing: button',s:'#x-cta .box'});
+add(GX,{k:'x.cta.bh',l:'Closing: button link',s:'#x-cta .box',t:'attr',a:'href'});
+[['life','Coastal life'],['things','Things to experience'],['beyond','Beyond Hiriketiya'],['culture','Local culture and flavours'],['cta','Closing call to action']].forEach(([id,l])=>add(GX,{k:'show.x.'+id,l:'Show: '+l,s:'#x-'+id,t:'show'}));
+
+const G9='Page: Plan your trip';ph('trip',G9);
+add(G9,{k:'surf.lh',l:'Listings heading',s:'#trip .split>div:nth-child(1)>h3'});
+add(G9,{k:'surf.empty',l:'Message when no listings yet',s:'#trip .card.empty p',t:'long'});
+add(G9,{k:'surf.fh',l:'Booking form heading',s:'#trip .split>div:nth-child(2)>h3'});
+add(G9,{k:'surf.fb',l:'Booking form button',s:'#trip form[data-kind="Booking request"] button'});
 add(G9,{k:'surf.ph',l:'Partner heading',s:'#partner h3'});
 add(G9,{k:'surf.pb',l:'Partner form button',s:'#partner button'});
-add(G9,{k:'show.surf.form',l:'Show the booking form',s:'#surf .split>div:nth-child(2)',t:'show'});
+add(G9,{k:'show.surf.form',l:'Show the booking form',s:'#trip .split>div:nth-child(2)',t:'show'});
 add(G9,{k:'show.partner',l:'Show the partner application',s:'#partner',t:'show'});
 
 const G10='Page: Stay & Eat';ph('stay',G10);
