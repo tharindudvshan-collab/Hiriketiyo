@@ -105,6 +105,26 @@ add(G8,{k:'disc.h',l:'Planner heading',s:'#discover h3'});
 [1,2,3,4].forEach(i=>add(G8,{k:'chip'+i,l:'Planner option '+i,s:`#chips label:nth-child(${i})`}));
 add(G8,{k:'show.disc.note',l:'Show the notice box',s:'#discover .note',t:'show'});
 
+/* ---------- DO HIRIKETIYO marketplace ---------- */
+const GDO='Page: DO HIRIKETIYO';
+add(GDO,{k:'do.cap',l:'Small line above the title',s:'#do .dohero .cap'});
+add(GDO,{k:'do.h',l:'Main heading',s:'#do .dohero h1'});
+add(GDO,{k:'do.tag',l:'Supporting headline',s:'#do .do-tag'});
+add(GDO,{k:'do.desc',l:'Description',s:'#do .do-desc',t:'long'});
+add(GDO,{k:'do.b1',l:'Primary button',s:'#do .do-cta a.box.s'});
+add(GDO,{k:'do.b2',l:'Secondary button',s:'#do .do-cta a.box:not(.s)'});
+add(GDO,{k:'do.b2h',l:'Secondary button: link',s:'#do .do-cta a.box:not(.s)',t:'attr',a:'href'});
+add(GDO,{k:'do.ch',l:'Categories heading',s:'#do-cats h2'});
+add(GDO,{k:'do.cp',l:'Categories intro',s:'#do-cats .in>p.mut',t:'long'});
+[('surf', 'Surf & Water Sports'), ('ocean', 'Ocean Adventures'), ('wellness', 'Wellness & Yoga'), ('rental', 'Rentals'), ('culture', 'Local Culture & Heritage'), ('food', 'Food & Cooking'), ('nature', 'Nature & Wildlife'), ('tours', 'Tours & Transfers')].forEach(([k,t],n)=>{
+  add(GDO,{k:'do.c'+(n+1)+'t',l:'Category '+(n+1)+': title',s:`.dgrid .dcat:nth-child(${n+1}) h3`});
+  add(GDO,{k:'do.c'+(n+1)+'s',l:'Category '+(n+1)+': short line',s:`.dgrid .dcat:nth-child(${n+1}) p`,t:'long'});
+  add(GDO,{k:'do.c'+(n+1)+'d',l:'Category '+(n+1)+': description',s:`#do-${k} .dpd`,t:'long'});
+});
+add(GDO,{k:'do.eh',l:'Closing heading',s:'#do .do-end h3'});
+add(GDO,{k:'do.ep',l:'Closing text',s:'#do .do-end p',t:'long'});
+add(GDO,{k:'do.eb',l:'Closing button',s:'#do .do-end a.btn'});
+
 const G9='Page: Surf & Experiences';ph('surf',G9);
 add(G9,{k:'surf.lh',l:'Listings heading',s:'#surf .split>div:nth-child(1)>h3'});
 add(G9,{k:'surf.empty',l:'Message when no listings yet',s:'#surf .card.empty p',t:'long'});

@@ -14,7 +14,7 @@ st.textContent=
  '.ss-wrap{display:block;position:relative}.ss-wrap img{display:block}'+
  (calm?'':
  '.hero-bg img,.dhero>img,.photo{transition:opacity 1.4s ease}'+
- '.svc .im img,.dim img,.dpl .im img{transition:transform .9s cubic-bezier(.22,1,.36,1),opacity 1.4s ease}');
+ '.svc .im img,.dim img,.dpl .im img,.dcat .im img{transition:transform .9s cubic-bezier(.22,1,.36,1),opacity 1.4s ease}');
 document.head.append(st);
 
 /* Extra photos are normal <img> elements. Inside a <picture> they get a wrapper span, because a <picture>
@@ -41,7 +41,7 @@ function tick(s){
 
 function start(first,base,delay){
   const els=[first,...extras(first,base)],s={els,cur:0,vis:true};
-  const box=first.closest('.hero-bg,.dhero,.svc .im,.dim,.dpl .im,.ss-wrap')||first.parentElement;
+  const box=first.closest('.hero-bg,.dhero,.svc .im,.dim,.dpl .im,.dcat .im,.ss-wrap')||first.parentElement;
   if('IntersectionObserver' in window)new IntersectionObserver(e=>{s.vis=e[0].isIntersecting}).observe(box);
   setTimeout(()=>{tick(s);setInterval(()=>tick(s),SEC)},delay);
 }
@@ -53,8 +53,8 @@ if(hero)start(hero,'hero',SEC);
 const bay=document.querySelector('img.photo[data-slot="bay"]');
 if(bay){const p=bay.closest('picture');if(p)p.classList.add('ss-wrap');start(bay,'bay',SEC-700)}
 
-document.querySelectorAll('img[data-slot^="svc-"],img[data-slot^="disc-"]').forEach(img=>{
-  if(img.classList.contains('ss-x')||/-\d$/.test(img.dataset.slot))return;
+document.querySelectorAll('img[data-slot^="svc-"],img[data-slot^="disc-"],img[data-slot^="do-"]').forEach(img=>{
+  if(img.classList.contains('ss-x')||/-[2-4]$/.test(img.dataset.slot))return;
   start(img,img.dataset.slot,4500+((k++)%8)*500);
 });
 

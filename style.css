@@ -637,3 +637,49 @@ footer nav h4{grid-column:1/-1}
 .nl a.svcbtn::before,.nl a.svcbtn::after{display:none}
 .nl a.svcbtn:hover,.nl a.svcbtn[aria-current=page]{background:var(--teal);color:#fff}
 .nl a.svcbtn:hover .rl i,.nl a.svcbtn:hover .ni,.nl a.svcbtn[aria-current=page] .rl i,.nl a.svcbtn[aria-current=page] .ni{color:#fff}
+
+/* ===== DO HIRIKETIYO marketplace ===== */
+.box.dobtn{position:relative;overflow:hidden;isolation:isolate;display:inline-flex;align-items:center;gap:.75em;border-radius:999px;padding:.85rem 1.7rem;font-weight:600;letter-spacing:.28em;transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s,background .35s}
+.dobtn::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(110deg,#0000 30%,#ffffff59 50%,#0000 70%);transform:translateX(-120%);transition:transform .8s cubic-bezier(.22,1,.36,1)}
+.dobtn::after{content:"\2197";font-size:1.2em;line-height:1;transition:transform .35s cubic-bezier(.22,1,.36,1)}
+.dobtn:hover,.dobtn:focus-visible{transform:translateY(-2px);box-shadow:0 14px 30px #087f8373}
+.dobtn:hover::before,.dobtn:focus-visible::before{transform:translateX(120%)}
+.dobtn:hover::after,.dobtn:focus-visible::after{transform:translate(3px,-3px)}
+@media(max-width:520px){.box.dobtn{display:flex;justify-content:center;width:calc(100% - .6rem)}}
+#do{--dopad:clamp(1rem,4vw,1.5rem)}
+.dohero{background:linear-gradient(145deg,#04303d,#087F83 70%,#2bb3b7)}
+.dohero>img:not([src]){display:none}
+.dohero h1{font:600 clamp(2.3rem,9vw,5rem)/1.05 var(--sans);letter-spacing:.16em;margin:.3em 0 .15em;color:#fff;text-shadow:0 4px 24px #0006}
+.do-tag{font:400 clamp(1.3rem,3.6vw,2.1rem) var(--script);color:#f0dcae;margin:0 0 1rem}
+.do-desc{max-width:62ch;margin:0 auto 1.6rem;color:#ffffffe6;line-height:1.7}
+.do-cta{display:flex;flex-wrap:wrap;justify-content:center;gap:.4rem}
+.dgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2rem}
+.dcat{appearance:none;display:flex;flex-direction:column;text-align:left;padding:0;overflow:hidden;cursor:pointer;color:var(--txt);font:inherit;background:var(--card);border:1px solid var(--line);border-radius:14px;transition:transform .3s,box-shadow .3s,border-color .3s}
+.dcat:hover{transform:translateY(-4px);box-shadow:0 16px 34px #0a2a3024}
+.dcat[aria-pressed=true]{border-color:var(--teal);box-shadow:0 0 0 2px var(--teal)}
+.dcat .im{position:relative;display:block;aspect-ratio:4/3;overflow:hidden;background:linear-gradient(145deg,#0b2e33,#087F83 70%,#2bb3b7)}
+.dcat .im img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .9s cubic-bezier(.22,1,.36,1)}
+.dcat:hover .im img{transform:scale(1.05)}
+.dcat .im img:not([src]){display:none}
+.dcph{position:absolute;inset:0;display:grid;place-items:center;color:#ffffff73}
+.dcph svg{width:56px;height:56px}
+.dcat .im img[src]~.dcph{display:none}
+.dcat .bd{display:block;padding:.9rem 1rem 1.1rem}
+.dcat h3{margin:0 0 .3rem;font:600 .9rem var(--sans);letter-spacing:.06em}
+.dcat p{margin:0;font-size:.8rem;line-height:1.5;color:var(--mut)}
+.do-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;margin:2.5rem 0 1rem;scroll-margin-top:calc(var(--hh,80px) + 12px)}
+.docats{scroll-margin-top:calc(var(--hh,80px) + 12px)}
+.do-bar h3{margin:0}
+.do-all[aria-pressed=true]{background:var(--teal);color:#fff}
+.dopanel{display:grid;grid-template-columns:1fr 1.2fr;gap:1.5rem;padding:1.5rem;margin-bottom:1rem;background:var(--card);border:1px solid var(--line);border-radius:14px;scroll-margin-top:calc(var(--hh,80px) + 12px)}
+.dopanel[hidden]{display:none}
+.dopanel h3{margin:.2rem 0 .6rem}
+.dopanel h4{margin:0 0 .7rem;font:600 .72rem var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--mut)}
+.dochips{display:flex;flex-wrap:wrap;gap:.5rem;list-style:none;margin:0 0 1.2rem;padding:0}
+.dochips li{padding:.4rem .85rem;border:1px solid var(--line);border-radius:999px;font-size:.82rem}
+.dact{display:flex;flex-wrap:wrap;gap:.6rem}
+.do-end{margin-top:2.5rem;padding:2rem 1.25rem;text-align:center;border-radius:14px;background:linear-gradient(180deg,var(--sand),var(--sand2))}
+.do-end h3{margin:0 0 .4rem}
+@media(max-width:900px){.dgrid{grid-template-columns:repeat(2,1fr)}.dopanel{grid-template-columns:1fr}}
+@media(max-width:420px){.dgrid{gap:.7rem}.dcat .bd{padding:.7rem .75rem .9rem}.dcat h3{font-size:.8rem}.dcat p{display:none}}
+@media(prefers-reduced-motion:reduce){.dcat,.dcat .im img{transition:none}}

@@ -1,8 +1,8 @@
 const bd=document.getElementById('birds');[[120,26,0,1],[180,24,-6,.8],[90,30,-12,.9],[240,27,-17,.7],[150,33,-22,.6]].forEach(([y,d,dl,s])=>{const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('class','bird');g.style.cssText=`--y:${y}px;animation-duration:${d}s;animation-delay:${dl}s`;g.innerHTML=`<path transform="scale(${s})" d="M0 0q9-11 18 0q9-11 18 0"/>`;bd.appendChild(g)});
 addEventListener('scroll',()=>document.querySelector('header').classList.toggle('sm',scrollY>60),{passive:true});
-const P=['home','discover','surf','stay','transport','shop','services'];
+const P=['home','discover','surf','stay','transport','shop','services','do'];
 // Menu names that open a page and then jump to a section: name -> [page, section id, menu item to highlight]
-const AL={partner:['surf','partner','surf'],destinations:['discover','d-places','destinations'],plan:['surf','tp','plan']};
+const AL={do:['do','do','surf'],partner:['surf','partner','surf'],destinations:['discover','d-places','destinations'],plan:['surf','tp','plan']};
 function tog(){const n=document.getElementById('mob');const o=n.classList.toggle('open');document.querySelector('.menu').setAttribute('aria-expanded',o)}
 function route(){let k=location.hash.slice(1)||'home';const al=AL[k];let h=al?al[0]:k;if(!P.includes(h)){h='home';k='home'}const cur=al?al[2]:h;
 document.querySelectorAll('.page').forEach(p=>p.classList.toggle('on',p.id===h));
@@ -67,4 +67,20 @@ function build(){
     b.append(el('span','nm',r.n.trim()),tr,el('span','kk',r.km+' km'));li.append(b);ol.append(li)})}
 build();
 new MutationObserver(()=>{clearTimeout(timer);timer=setTimeout(build,60)}).observe(g,{subtree:true,childList:true,characterData:true});
+})();
+
+// DO HIRIKETIYO marketplace: category tiles filter the listings below (state is kept in JS, the hash stays for page routing)
+(()=>{const d=document.getElementById('do');if(!d)return;
+const calm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const tiles=[...d.querySelectorAll('.dcat')],panels=[...d.querySelectorAll('.dopanel')],all=d.querySelector('.do-all'),cnt=d.querySelector('#do-count'),list=d.querySelector('#do-list');
+function pick(k){tiles.forEach(t=>t.setAttribute('aria-pressed',String(t.dataset.cat===k)));
+  panels.forEach(p=>p.hidden=!(k==='all'||p.dataset.cat===k));
+  all.setAttribute('aria-pressed',String(k==='all'));
+  const t=tiles.find(x=>x.dataset.cat===k);cnt.textContent=t?t.querySelector('h3').textContent:'All '+tiles.length+' categories'}
+d.addEventListener('click',e=>{
+  const g=e.target.closest('[data-go]');if(g){const t=document.getElementById(g.dataset.go);if(t){e.preventDefault();t.scrollIntoView({behavior:calm?'auto':'smooth',block:'start'})}return}
+  const t=e.target.closest('.dcat');
+  if(t){const on=t.getAttribute('aria-pressed')==='true';pick(on?'all':t.dataset.cat);list.scrollIntoView({behavior:calm?'auto':'smooth',block:'start'});return}
+  if(e.target.closest('.do-all'))pick('all')});
+if('IntersectionObserver'in window){d.classList.add('rvon');const rv=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('rvin');rv.unobserve(en.target)}}),{rootMargin:'0px 0px -8% 0px',threshold:.08});d.querySelectorAll('.rv').forEach(el=>rv.observe(el))}
 })();

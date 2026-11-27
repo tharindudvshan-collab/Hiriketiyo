@@ -75,3 +75,11 @@ hiriketiyo/
 - Each item has an icon (inline SVG, 1.5 stroke), a number and a one-line description (hover card on desktop, shown in the phone menu). All texts are editable in Admin Studio > Top bar & menus.
 - Below 1320px wide the bar becomes the phone menu (six items would not fit).
 - Upload together: `index.html`, `style.css`, `app.js`, `content-map.js`, `sw.js` (VERSION `hiriketiyo-v36`).
+
+## DO HIRIKETIYO marketplace (`#do`)
+- Hero button "DO HIRIKETIYO ↗" (`.box.s.dobtn`, arrow drawn in CSS so the text stays editable) opens the `#do` page. `app.js` highlights "02 Experiences" while it is open.
+- `#do` page: hero (title, "Discover More. Experience Everything.", description, EXPLORE EXPERIENCES and BECOME A LOCAL PARTNER buttons), 8 category tiles, and one listing panel per category. Clicking a tile filters the panels (state in JS, not the hash); "Show all" resets.
+- Categories: Surf & Water Sports, Ocean Adventures, Wellness & Yoga, Rentals, Local Culture & Heritage, Food & Cooking, Nature & Wildlife, Tours & Transfers.
+- Photo slots (Admin > Photos, up to 4 photos each): `do-hero`, `do-surf`, `do-ocean`, `do-wellness`, `do-rental`, `do-culture`, `do-food`, `do-nature`, `do-tours`. Empty slots show a teal placeholder with an icon.
+- All texts are in Admin Studio > Page: DO HIRIKETIYO. Panel activity lists and prices are not invented: real partner listings go in once partners are approved.
+- Upload together: `index.html`, `style.css`, `app.js`, `slideshow.js`, `content-map.js`, `admin.html`, `sw.js` (VERSION `hiriketiyo-v40`).
