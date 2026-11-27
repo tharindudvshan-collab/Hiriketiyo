@@ -76,10 +76,14 @@ hiriketiyo/
 - Below 1320px wide the bar becomes the phone menu (six items would not fit).
 - Upload together: `index.html`, `style.css`, `app.js`, `content-map.js`, `sw.js` (VERSION `hiriketiyo-v36`).
 
-## DO HIRIKETIYO marketplace (`#do`)
-- Hero button "DO HIRIKETIYO ↗" (`.box.s.dobtn`, arrow drawn in CSS so the text stays editable) opens the `#do` page. `app.js` highlights "02 Experiences" while it is open.
-- `#do` page: hero (title, "Discover More. Experience Everything.", description, EXPLORE EXPERIENCES and BECOME A LOCAL PARTNER buttons), 8 category tiles, and one listing panel per category. Clicking a tile filters the panels (state in JS, not the hash); "Show all" resets.
-- Categories: Surf & Water Sports, Ocean Adventures, Wellness & Yoga, Rentals, Local Culture & Heritage, Food & Cooking, Nature & Wildlife, Tours & Transfers.
-- Photo slots (Admin > Photos, up to 4 photos each): `do-hero`, `do-surf`, `do-ocean`, `do-wellness`, `do-rental`, `do-culture`, `do-food`, `do-nature`, `do-tours`. Empty slots show a teal placeholder with an icon.
-- All texts are in Admin Studio > Page: DO HIRIKETIYO. Panel activity lists and prices are not invented: real partner listings go in once partners are approved.
-- Upload together: `index.html`, `style.css`, `app.js`, `slideshow.js`, `content-map.js`, `admin.html`, `sw.js` (VERSION `hiriketiyo-v40`).
+## DO HIRIKETIYO marketplace (`#do`, `do.js`)
+- Hero button "DO HIRIKETIYO ↗" (`.box.s.dobtn`, arrow drawn in CSS) opens `#do`; the top bar highlights "02 Experiences" while it is open.
+- Page: hero, 8 category tiles (Surf & Ocean, Wellness & Fitness, Food & Culinary, Tours & Adventures, Spa & Relaxation, Rentals & Equipment, Creative & Lifestyle, Events & Special Experiences), filter chips, listing cards, closing partner CTA.
+- **Only approved providers are shown.** `do.js` reads the Supabase `listings` table (client shared by `data.js` as `window.hkSb`). The categories and their services are listed once at the top of `do.js` (`CATS`); a service chip only appears when a listing uses it. Empty categories show "Opening soon". Nothing is invented: every card/detail field is optional and hidden when the listing lacks it; ratings need `reviews_verified = true`.
+- Placement: `listings.do_category` (+ `do_service`). If empty, partner type decides (surf → Surf & Ocean, experience → Tours & Adventures). Stay, transport and shop partners and `kind = product` are never shown here (no duplicates across sections).
+- Card: photo, category, provider, location, title, description, duration, group size, dates, "From" price, View Details, Book Now. Detail dialog: gallery, overview, provider, included / not included, pricing, dates and times, cancellation, map, verified reviews, Book Now, WhatsApp enquiry.
+- Booking is a **request** flow (Experience > Date > Guests > Details > Submit) saved through `submit_enquiry('booking_request', …)` with status `pending_provider_confirmation`. It is never auto-confirmed. If the request can not be sent, the customer is offered the same details on WhatsApp (`94717505506`).
+- Payment and commissions are not connected (`PAYMENT.enabled=false` in `do.js`). The existing PayHere checkout (`#co`) is untouched.
+- Optional columns for richer listings: `supabase-do-marketplace.sql` (review and run it yourself). Without it the cards still work with the basic fields.
+- Photo slots (Admin > Photos, up to 4 each): `do-hero`, `do-surf`, `do-wellness`, `do-food`, `do-tours`, `do-spa`, `do-rentals`, `do-creative`, `do-events`. Texts: Admin Studio > Page: DO HIRIKETIYO.
+- Upload together: `index.html`, `style.css`, `app.js`, `data.js`, `do.js`, `slideshow.js`, `content-map.js`, `admin.html`, `sw.js` (VERSION `hiriketiyo-v41`).

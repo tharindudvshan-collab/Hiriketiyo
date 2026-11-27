@@ -69,18 +69,3 @@ build();
 new MutationObserver(()=>{clearTimeout(timer);timer=setTimeout(build,60)}).observe(g,{subtree:true,childList:true,characterData:true});
 })();
 
-// DO HIRIKETIYO marketplace: category tiles filter the listings below (state is kept in JS, the hash stays for page routing)
-(()=>{const d=document.getElementById('do');if(!d)return;
-const calm=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const tiles=[...d.querySelectorAll('.dcat')],panels=[...d.querySelectorAll('.dopanel')],all=d.querySelector('.do-all'),cnt=d.querySelector('#do-count'),list=d.querySelector('#do-list');
-function pick(k){tiles.forEach(t=>t.setAttribute('aria-pressed',String(t.dataset.cat===k)));
-  panels.forEach(p=>p.hidden=!(k==='all'||p.dataset.cat===k));
-  all.setAttribute('aria-pressed',String(k==='all'));
-  const t=tiles.find(x=>x.dataset.cat===k);cnt.textContent=t?t.querySelector('h3').textContent:'All '+tiles.length+' categories'}
-d.addEventListener('click',e=>{
-  const g=e.target.closest('[data-go]');if(g){const t=document.getElementById(g.dataset.go);if(t){e.preventDefault();t.scrollIntoView({behavior:calm?'auto':'smooth',block:'start'})}return}
-  const t=e.target.closest('.dcat');
-  if(t){const on=t.getAttribute('aria-pressed')==='true';pick(on?'all':t.dataset.cat);list.scrollIntoView({behavior:calm?'auto':'smooth',block:'start'});return}
-  if(e.target.closest('.do-all'))pick('all')});
-if('IntersectionObserver'in window){d.classList.add('rvon');const rv=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('rvin');rv.unobserve(en.target)}}),{rootMargin:'0px 0px -8% 0px',threshold:.08});d.querySelectorAll('.rv').forEach(el=>rv.observe(el))}
-})();

@@ -114,13 +114,14 @@ add(GDO,{k:'do.desc',l:'Description',s:'#do .do-desc',t:'long'});
 add(GDO,{k:'do.b1',l:'Primary button',s:'#do .do-cta a.box.s'});
 add(GDO,{k:'do.b2',l:'Secondary button',s:'#do .do-cta a.box:not(.s)'});
 add(GDO,{k:'do.b2h',l:'Secondary button: link',s:'#do .do-cta a.box:not(.s)',t:'attr',a:'href'});
+add(GDO,{k:'do.cc',l:'Small line above categories',s:'#do-cats .cap'});
 add(GDO,{k:'do.ch',l:'Categories heading',s:'#do-cats h2'});
 add(GDO,{k:'do.cp',l:'Categories intro',s:'#do-cats .in>p.mut',t:'long'});
-[('surf', 'Surf & Water Sports'), ('ocean', 'Ocean Adventures'), ('wellness', 'Wellness & Yoga'), ('rental', 'Rentals'), ('culture', 'Local Culture & Heritage'), ('food', 'Food & Cooking'), ('nature', 'Nature & Wildlife'), ('tours', 'Tours & Transfers')].forEach(([k,t],n)=>{
-  add(GDO,{k:'do.c'+(n+1)+'t',l:'Category '+(n+1)+': title',s:`.dgrid .dcat:nth-child(${n+1}) h3`});
-  add(GDO,{k:'do.c'+(n+1)+'s',l:'Category '+(n+1)+': short line',s:`.dgrid .dcat:nth-child(${n+1}) p`,t:'long'});
-  add(GDO,{k:'do.c'+(n+1)+'d',l:'Category '+(n+1)+': description',s:`#do-${k} .dpd`,t:'long'});
-});
+for(let n=1;n<=8;n++){
+  add(GDO,{k:'do.c'+n+'t',l:'Category '+n+': title',s:`.dgrid .dcat:nth-child(${n}) h3`});
+  add(GDO,{k:'do.c'+n+'s',l:'Category '+n+': short line',s:`.dgrid .dcat:nth-child(${n}) p`,t:'long'});
+}
+add(GDO,{k:'do.emb',l:'Message button',s:'#do-empty a.btn'});
 add(GDO,{k:'do.eh',l:'Closing heading',s:'#do .do-end h3'});
 add(GDO,{k:'do.ep',l:'Closing text',s:'#do .do-end p',t:'long'});
 add(GDO,{k:'do.eb',l:'Closing button',s:'#do .do-end a.btn'});

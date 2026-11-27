@@ -5,7 +5,7 @@ const SUPABASE_URL="https://ojitwdejlhbvlnmsbwyy.supabase.co";
 const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9qaXR3ZGVqbGhidmxubXNid3l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU2MDM5NDksImV4cCI6MjExMTE3OTk0OX0.H1rISXmhlAXKB8OLkfYVb7JTTRLJ9TcxKih99FwPqZk";   // public key; RLS protects the data. Never put service_role here.
 if(!window.supabase||SUPABASE_URL.includes("YOUR-"))return;
 
-const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);window.hkSb=sb;   /* used by do.js (DO HIRIKETIYO marketplace) */
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const LKR=c=>"LKR "+(c/100).toLocaleString("en-LK",{minimumFractionDigits:2});
