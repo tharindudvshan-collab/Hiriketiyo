@@ -2,7 +2,7 @@ const bd=document.getElementById('birds');[[120,26,0,1],[180,24,-6,.8],[90,30,-1
 addEventListener('scroll',()=>document.querySelector('header').classList.toggle('sm',scrollY>60),{passive:true});
 const P=['home','discover','surf','trip','stay','transport','shop','services','do'];
 // Menu names that open a page and then jump to a section: name -> [page, section id, menu item to highlight]
-const AL={do:['do','do','surf'],partner:['trip','partner','surf'],destinations:['discover','d-places','destinations'],plan:['trip','tp','plan']};
+const AL={do:['do','do','do'],partner:['trip','partner','surf'],destinations:['discover','d-places','destinations'],plan:['trip','tp','plan']};
 function tog(){const n=document.getElementById('mob');const o=n.classList.toggle('open');document.querySelector('.menu').setAttribute('aria-expanded',o)}
 function route(){let k=location.hash.slice(1)||'home';const al=AL[k];let h=al?al[0]:k;if(!P.includes(h)){h='home';k='home'}const cur=al?al[2]:h;
 document.querySelectorAll('.page').forEach(p=>p.classList.toggle('on',p.id===h));
