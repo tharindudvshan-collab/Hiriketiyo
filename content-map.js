@@ -126,6 +126,12 @@ add(GDO,{k:'do.eh',l:'Closing heading',s:'#do .do-end h3'});
 add(GDO,{k:'do.ep',l:'Closing text',s:'#do .do-end p',t:'long'});
 add(GDO,{k:'do.eb',l:'Closing button',s:'#do .do-end a.btn'});
 
+const GPL='Product line strip (every page)';
+add(GPL,{k:'pl.h',l:'Heading',s:'.pline .pl-hd h2'});
+add(GPL,{k:'pl.p',l:'Line under the heading',s:'.pline .pl-hd p'});
+add(GPL,{k:'pl.b',l:'Link text',s:'.pline .pl-all'});
+add(GPL,{k:'show.pl',l:'Show the product line strip',s:'.pline',t:'show'});
+
 const GX='Page: Experiences';
 add(GX,{k:'x.h',l:'Hero: title',s:'#surf .xhero h2'});
 add(GX,{k:'x.sub',l:'Hero: sentence under the title',s:'#surf .xhero p'});
