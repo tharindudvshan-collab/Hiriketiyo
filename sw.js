@@ -1,6 +1,6 @@
 // HIRIKETIYO service worker: caches the app shell so the site opens fast and works offline.
 // Change VERSION whenever you update any file, so visitors receive the new version.
-const VERSION='hiriketiyo-v45';
+const VERSION='hiriketiyo-v46';
 const CORE=[
  "./",
  "index.html",
