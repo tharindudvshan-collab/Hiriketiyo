@@ -162,7 +162,7 @@ function recalc(){if(!cur)return;const q=Math.max(1,Math.min(50,+cf.qty.value||1
 function openCheckout(l){cur=l;$("#coTitle").textContent=l.title;$("#coPartner").textContent=l.partners?.name||"HIRIKETIYO";
   const svc=l.kind==="service";$("#coDateL").hidden=!svc;cf.date.required=svc;cf.date.min=new Date().toISOString().slice(0,10);
   $("#coErr").textContent="";$("#coPay").disabled=false;recalc();dlg.showModal();}
-cf.qty.oninput=recalc;$("#coX").onclick=()=>dlg.close();
+window.hkCheckout=openCheckout;cf.qty.oninput=recalc;$("#coX").onclick=()=>dlg.close();
 cf.onsubmit=async e=>{e.preventDefault();const b=$("#coPay");b.disabled=true;$("#coErr").textContent="";
   const{data,error}=await sb.functions.invoke("create-checkout",{body:{listing_id:cur.id,quantity:+cf.qty.value,email:cf.email.value.trim(),name:cf.name.value.trim(),
     phone:cf.phone.value.trim(),service_date:cf.date.value||null,guests:cur.kind==="service"?+cf.qty.value:null,notes:cf.notes.value.trim()||null}});

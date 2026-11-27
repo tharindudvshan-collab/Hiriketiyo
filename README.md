@@ -97,9 +97,9 @@ hiriketiyo/
 - Styles are the `.x*` block at the end of `style.css`; reveal-on-scroll for `#surf` is at the end of `app.js`.
 - Upload together: `index.html`, `style.css`, `app.js`, `slideshow.js`, `content-map.js`, `admin.html`, `sw.js` (VERSION `hiriketiyo-v42`).
 
-## Product line strip (every page, `productline.js`)
-- A slow, endlessly running band ("Traditional Art of Ceylon": arched gold-ruled niches, traditional border motif) placed in the **middle of whichever page is open** and moved automatically when the visitor changes tab. Exactly one strip exists; it is inserted after the middle block of the open page.
-- Content: approved products from the Supabase `listings` table (`kind = 'product'`, same source as the Shop page, loaded through `window.hkSb` from `data.js`). Each shows photo, name and LKR price and links to `#shop`. Until a product exists it shows traditional craft categories (Batik, Handloom, Wooden masks, Lacquerware, Brass lamps, Ceylon tea, Cinnamon) marked "Coming soon". Nothing is invented: no prices or stock for categories.
-- Speed is about 38px per second (`--pld` is set by the script); it pauses on hover, keyboard focus and when off screen. With reduced motion it is a calm swipeable row instead of a run. Duplicate items used for the seamless loop are hidden from screen readers and the tab order.
-- Styles: the `.pline` / `.pl-*` block at the end of `style.css`. Texts: Admin Studio > Product line strip (heading, line, link, on/off).
-- Upload together: `index.html`, `style.css`, `productline.js`, `content-map.js`, `sw.js` (VERSION `hiriketiyo-v43`, `productline.js` added to `CORE`).
+## Shop page + product line strip (`shop.js`, `productline.js`)
+- **One source of products:** the Supabase `listings` table, `kind = 'product'` (the products you add for the Shopping area). `shop.js` loads them once as `window.hkProducts`; the Shopping page and the strip both use it.
+- **Shopping page (`#shop`)**: search, sort (newest, price, name), responsive product grid, and a product detail dialog (photo, seller, LKR price, description, Buy now, Ask on WhatsApp). "Buy now" opens the existing checkout (`window.hkCheckout`, exposed by `data.js`). With no products the original "Collection coming soon" card stays (editable in Admin Studio > Page: Shop). The grid container is `#shop-app` (it is no longer a `.live` container).
+- **Product line strip**: a slow, endlessly running band in the middle of whichever page is open. It shows **only** the real products from the shop. With none, the strip is hidden (no placeholder categories). It is not shown on the Shopping page itself. Clicking a product opens its detail dialog. About 38px per second, pauses on hover / focus / off screen; reduced motion gets a calm swipeable row. Texts: Admin Studio > Product line strip.
+- Styles: `.pline` / `.pl-*` and the `.shop-*` / `.sp*` / `#pd` blocks at the end of `style.css`.
+- Upload together: `index.html`, `style.css`, `data.js`, `shop.js`, `productline.js`, `sw.js` (VERSION `hiriketiyo-v44`, `shop.js` added to `CORE`).

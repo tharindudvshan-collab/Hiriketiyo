@@ -832,3 +832,45 @@ footer nav h4{grid-column:1/-1}
 .pl-all{display:inline-block;margin-top:1.3rem;padding:.55rem 0;font:600 .66rem var(--sans);letter-spacing:.28em;text-transform:uppercase;color:#d9c28a;text-decoration:none;border-bottom:1px solid #b59a62;transition:color .25s,border-color .25s}
 .pl-all:hover,.pl-all:focus-visible{color:#fff;border-color:#fff}
 @media(prefers-reduced-motion:reduce){.pl-t{animation:none;width:auto}.pl-run{overflow-x:auto;-webkit-mask:none;mask:none;scroll-snap-type:x proximity;padding-inline:1.25rem}.pl-i{scroll-snap-align:center}.pl-f{transition:none}}
+
+/* --- Shop page: product grid + detail dialog (shop.js) --- */
+.shop-bar{display:flex;flex-wrap:wrap;align-items:center;gap:.8rem 1rem;margin:0 0 1.8rem}
+.shop-bar input,.shop-bar select{font:500 .92rem var(--sans);min-height:46px;padding:.65rem 1.1rem;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--txt)}
+.shop-bar input{flex:1 1 240px;max-width:420px}
+.shop-bar input:focus-visible,.shop-bar select:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.shop-n{margin-left:auto;color:var(--mut);font-size:.85rem}
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem;list-style:none;margin:0;padding:0}
+.shop-grid>li{min-width:0}
+.sp{appearance:none;display:flex;flex-direction:column;width:100%;height:100%;padding:0;margin:0;text-align:left;font:inherit;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;box-shadow:0 10px 28px #0a2a3014;transition:transform .25s,box-shadow .25s,border-color .25s}
+.sp:hover{transform:translateY(-4px);box-shadow:0 16px 34px #0a2a3024;border-color:var(--gold)}
+.sp:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
+.sp-im{display:grid;place-items:center;aspect-ratio:1/1;background:var(--sand);color:var(--gold);overflow:hidden}
+.sp-im img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s cubic-bezier(.22,1,.36,1)}
+.sp:hover .sp-im img{transform:scale(1.05)}
+.sp-ph{width:42%;height:auto}
+.sp-b{display:flex;flex-direction:column;gap:.3rem;padding:1.05rem 1.15rem 1.2rem;flex:1}
+.sp-by{font:600 .68rem var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--teal)}
+.sp-t{font:600 1.02rem/1.3 var(--sans);color:var(--ink)}
+.sp-pr{font:700 1rem var(--sans);color:var(--txt);margin-top:auto;padding-top:.4rem}
+.sp-v{font:600 .76rem var(--sans);letter-spacing:.08em;color:var(--teal)}
+.sp-v::after{content:" \2192"}
+.shop-note{text-align:center;margin-top:2rem}
+dialog#pd{border:1px solid var(--line);background:var(--card);color:var(--txt);padding:0;width:min(860px,calc(100% - 2rem));max-height:92vh;overflow:auto;border-radius:18px}
+dialog#pd::backdrop{background:#04303d99}
+.pd-x{position:absolute;top:.7rem;right:.7rem;z-index:2;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--txt);font-size:1rem;cursor:pointer}
+.pd-x:focus-visible{outline:2px solid var(--teal)}
+.pd-g{display:grid;grid-template-columns:1fr 1fr}
+.pd-im{display:grid;place-items:center;background:var(--sand);color:var(--gold);min-height:260px}
+.pd-im img{width:100%;height:100%;max-height:70vh;object-fit:cover;display:block}
+.pd-im .sp-ph{width:30%}
+.pd-tx{padding:2rem 1.8rem 1.8rem;display:flex;flex-direction:column;gap:.7rem}
+.pd-by{margin:0;font:600 .7rem var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--teal)}
+.pd-tx h3{margin:0;font-size:1.6rem;line-height:1.2}
+.pd-pr{margin:0;font:700 1.35rem var(--sans)}
+.pd-ds{margin:0;white-space:pre-line;color:var(--txt);line-height:1.65}
+.pd-tx .note{margin:0}
+.pd-act{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:.4rem}
+.pd-act .btn{cursor:pointer}
+.pd-buy{background:var(--teal)!important;color:#fff!important;border-color:var(--teal)!important}
+@media(max-width:700px){.pd-g{grid-template-columns:1fr}.pd-im{min-height:220px}.pd-im img{max-height:46vh}.shop-n{margin-left:0;width:100%}}
+@media(prefers-reduced-motion:reduce){.sp,.sp-im img{transition:none}.sp:hover{transform:none}.sp:hover .sp-im img{transform:none}}

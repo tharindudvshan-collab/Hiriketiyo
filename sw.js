@@ -1,6 +1,6 @@
 // HIRIKETIYO service worker: caches the app shell so the site opens fast and works offline.
 // Change VERSION whenever you update any file, so visitors receive the new version.
-const VERSION='hiriketiyo-v43';
+const VERSION='hiriketiyo-v44';
 const CORE=[
  "./",
  "index.html",
@@ -11,6 +11,7 @@ const CORE=[
  "do.js",
  "slideshow.js",
  "trip.js",
+ "shop.js",
  "productline.js",
  "logo3d.js",
  "kites.js",
