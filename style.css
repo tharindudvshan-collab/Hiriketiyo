@@ -982,3 +982,15 @@ dialog#sfd::backdrop{background:#04303d99}
  .sf-g2{grid-template-columns:1fr}.sf-pc{flex-direction:column}.sf-pp{align-items:flex-start;text-align:left}
  .sf-sum{grid-template-columns:1fr}
 }
+
+/* ===== Full-width, full-height pages (every page fills the screen) ===== */
+section{padding-inline:clamp(1.25rem,4vw,5rem)}
+.in,.catalog .in,.xs .in,.tp>.in,.sf-main .in,.ft,footer .in,.dch .in,.xbeyond .in,.xcult .in{max-width:min(100%,2200px)}
+footer{padding-inline:clamp(1.25rem,4vw,5rem)}
+main{min-height:calc(100vh - var(--hh,120px));min-height:calc(100dvh - var(--hh,120px))}
+.page.on{display:flex;flex-direction:column;min-height:inherit}
+.page.on>*{flex:0 0 auto}
+.page.on>:last-child{flex:1 0 auto}
+.sf-list{grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr))}
+.sf-main .in{width:100%}
+@media(min-width:1500px){.dgrid,.svc-grid{grid-template-columns:repeat(4,1fr)}}

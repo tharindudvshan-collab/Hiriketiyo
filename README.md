@@ -114,3 +114,7 @@ hiriketiyo/
 - Customers open a partner: About / Packages / Reviews / Book. The booking is a **request** (`submit_enquiry('booking_request', {kind:'surf_lesson',...})`, status `pending_provider_confirmation`), with a WhatsApp fallback. Payment is not connected.
 - Styles: `.sf-*` and `#sfd` at the end of `style.css`.
 - Upload together: `index.html`, `style.css`, `app.js`, `surfpartners.js`, `admin.html`, `sw.js` (VERSION `hiriketiyo-v46`).
+
+## Full-width pages
+- Block "Full-width, full-height pages" at the end of `style.css`: content containers (`.in`, `.ft`, ...) use the full screen width (cap 2200px) with side padding `clamp(1.25rem,4vw,5rem)`; `main` and the open `.page` are at least one screen tall, so short pages fill the screen and the footer sits below the fold. `--hh` (header height) is set by `app.js`.
+- Upload together: `style.css`, `sw.js` (VERSION `hiriketiyo-v47`).
