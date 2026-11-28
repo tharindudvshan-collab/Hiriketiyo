@@ -158,6 +158,7 @@ input[type=number]{width:100%;padding:9px 11px;border:1px solid var(--line);bord
 .sh-pm{margin-bottom:12px}.sh-pm label{display:block;margin:8px 0 4px;font-size:.88rem}
 #shoplist details.grp summary{display:flex;justify-content:space-between;gap:8px;padding:11px 12px;cursor:pointer}
 #shoplist details.grp summary small{color:var(--mut);white-space:nowrap}
+#stprops details.grp summary,#stvenues details.grp summary{display:flex;justify-content:space-between;gap:8px;padding:11px 12px;cursor:pointer}#stprops .sec,#stvenues .sec{font-size:.98rem;margin:20px 0 6px;padding-top:12px;border-top:1px solid var(--line)}#stprops .sec:first-child,#stvenues .sec:first-child{border-top:0;margin-top:4px}
 #splist details.grp summary{display:flex;justify-content:space-between;gap:8px;padding:11px 12px;cursor:pointer}#splist details.grp summary small{color:var(--mut);text-align:right}
 #splist .sec{font-size:.98rem;margin:20px 0 6px;padding-top:12px;border-top:1px solid var(--line)}#splist .sec:first-child{border-top:0;margin-top:4px}
 .sp-sub{margin:8px 0;padding:11px}.sp-sub .row{margin-top:8px}
@@ -195,6 +196,7 @@ input[type=number]{width:100%;padding:9px 11px;border:1px solid var(--line);bord
         <button type="button" role="tab" data-t="content" aria-selected="true">Text &amp; links</button>
         <button type="button" role="tab" data-t="photos" aria-selected="false">Photos</button>
         <button type="button" role="tab" data-t="surfp" aria-selected="false">Surf partners</button>
+        <button type="button" role="tab" data-t="stay" aria-selected="false">Stay &amp; Eat</button>
         <button type="button" role="tab" data-t="shop" aria-selected="false">Products</button>
         <button type="button" role="tab" data-t="pay" aria-selected="false">Payment</button>
         <button type="button" role="tab" data-t="logo" aria-selected="false">Logo</button>
@@ -225,6 +227,12 @@ input[type=number]{width:100%;padding:9px 11px;border:1px solid var(--line);bord
           <div class="presets" id="presets"></div>
           <div class="cols" id="tcols"></div>
           <div class="presets" style="margin-top:14px"><button type="button" class="ghost" id="treset">Back to the original design</button></div>
+        </div>
+
+        <div class="panel" id="p-stay">
+          <div class="help"><b>Stay &amp; Eat page.</b> Add only businesses you have approved. Each one needs its real photos, prices and details. Tick <b>Verified Partner</b> only after checking the business. Nothing is shown to visitors until you press <b>Save</b>, and anything left empty is hidden. Customer fee (2%) is added at booking. The partner commission (8%) is not shown on the website: it is handled in your partner dashboard and agreement.</div>
+          <div class="sh-top"><button type="button" id="stadd">+ Add property</button><span class="mut" id="stpc"></span></div><div id="stprops"></div>
+          <div class="sh-top" style="margin-top:22px"><button type="button" id="stvadd">+ Add venue (restaurant or café)</button><span class="mut" id="stvc"></span></div><div id="stvenues"></div>
         </div>
 
         <div class="panel" id="p-surfp">
@@ -314,7 +322,7 @@ const SV=[["svc-surf","Surf lessons"],["svc-stay","Places to stay"],["svc-food",
 const DS=[["disc-hero", "Discover: top banner"], ["disc-bay", "Discover: The bay"], ["disc-surf", "Discover: Surf"], ["disc-life", "Discover: Local life"], ["disc-food", "Discover: Food"], ["disc-nature", "Discover: Nature"], ["disc-culture", "Discover: Culture"], ["disc-slow", "Discover: Slow down"], ["disc-p1", "Discover place 1: Blue Beach Island – Nilwella"], ["disc-p2", "Discover place 2: Hummanaya Blowhole – Kudawella"], ["disc-p3", "Discover place 3: Dondra Lighthouse – Dondra, Matara"], ["disc-p4", "Discover place 4: Turtle Point – Bathigama"], ["disc-p5", "Discover place 5: Mulkirigala Rock Temple – Mulkirigala"], ["disc-p6", "Discover place 6: Rekawa Beach – Tangalle"], ["disc-p7", "Discover place 7: Mawella Beach – Tangalle"], ["disc-p8", "Discover place 8: Silent Beach – Tangalle"]];
 const DOS=[["do-hero","DO HIRIKETIYO: top banner"],["do-surf","DO HIRIKETIYO: Surf and Ocean"],["do-wellness","DO HIRIKETIYO: Wellness and Fitness"],["do-food","DO HIRIKETIYO: Food and Culinary"],["do-tours","DO HIRIKETIYO: Tours and Adventures"],["do-spa","DO HIRIKETIYO: Spa and Relaxation"],["do-rentals","DO HIRIKETIYO: Rentals and Equipment"],["do-creative","DO HIRIKETIYO: Creative and Lifestyle"],["do-events","DO HIRIKETIYO: Events and Special Experiences"]];
 const EXS=[["exp-hero","Experiences: top banner"],["exp-l1","Experiences: Surf culture"],["exp-l2","Experiences: Beach life"],["exp-l3","Experiences: Tropical cafés"],["exp-l4","Experiences: Sunsets"],["exp-ocean","Experiences: Ocean"],["exp-wellness","Experiences: Wellness"],["exp-food","Experiences: Food"],["exp-adventure","Experiences: Adventure"],["exp-night","Experiences: Nightlife"],["exp-creative","Experiences: Creativity"],["exp-beyond","Experiences: Beyond Hiriketiya"],["exp-c1","Experiences: Culture, photo 1"],["exp-c2","Experiences: Culture, photo 2"]];
-const PG=[["Hero (top of the home page)","hero"],["About HIRIKETIYO","bay"],...SV.map(([k,l])=>["Service card: "+l,k]),...DS.map(([k,l])=>[l,k]),...DOS.map(([k,l])=>[l,k]),...EXS.map(([k,l])=>[l,k])];
+const PG=[["Hero (top of the home page)","hero"],["About HIRIKETIYO","bay"],...SV.map(([k,l])=>["Service card: "+l,k]),...DS.map(([k,l])=>[l,k]),...DOS.map(([k,l])=>[l,k]),...EXS.map(([k,l])=>[l,k]),["Stay & Eat: top banner","stay-hero"]];
 const slotsOf=b=>[1,2,3,4].map(n=>[n===1?b:b+"-"+n,"Photo "+n]);
 const LOGOS=[["logo-emblem-light","Emblem: for light backgrounds",0],["logo-emblem-dark","Emblem: for dark backgrounds",1],["logo-wordmark-light","Wordmark: for light backgrounds",0],["logo-wordmark-dark","Wordmark: for dark backgrounds",1]];
 
@@ -384,7 +392,7 @@ async function loadDefaults(){
 async function boot(){
   pv.src="index.html?hkpreview=1#"+$("#pgsel").value;
   await loadDefaults();
-  build();buildTheme();buildContent();fit();loadShop();loadSP();
+  build();buildTheme();buildContent();fit();loadShop();loadSP();loadSTY();
   const [im,tr]=await Promise.all([sb.from("site_images").select("*"),sb.from("site_theme").select("key,value").in("key",["theme","content"])]);
   if(im.error)toast("Could not load images: "+im.error.message+". Run the Supabase SQL (site_images table) first.","no");
   rows=Object.fromEntries((im.data||[]).map(r=>[r.slot,r]));build();
@@ -829,6 +837,78 @@ function spCard(p){
   $(".up",d).onclick=()=>mv(-1);$(".dn",d).onclick=()=>mv(1);
   $(".rm",d).onclick=async()=>{if(!confirm(p._new?"Discard this new partner?":"Delete this surf partner from the website?"))return;SPD.items=SPD.items.filter(x=>x!==p);
     if(!p._new){const r=await saveSP();if(r.error){toast("Delete failed: "+r.error.message,"no");await loadSP();return}toast("Surf partner deleted.","ok");$("#reload").click()}buildSP()};
+  return d}
+
+/* ---------------- STAY & EAT: properties + venues (saved in site_theme, key "stay") ---------------- */
+const ST_CATS=["Boutique Hotels","Villas & Private Stays","Guesthouses","Hostels","Budget Accommodation"];
+const FD_CATS=["Restaurants","Beachfront Cafés","Breakfast & Brunch","Sri Lankan Cuisine","Seafood & Dining"];
+const ST_STAT=[["open","Accepting requests"],["limited","Limited availability"],["full","Fully booked"],["closed","Closed for the season"]];
+let STY={props:[],venues:[]};const openST=new Set();
+const saveSTY=()=>saveKey("stay",{props:STY.props.filter(x=>!x._new).map(x=>{const{_new,...r}=x;return r}),venues:STY.venues.filter(x=>!x._new).map(x=>{const{_new,...r}=x;return r})});
+async function loadSTY(){
+  const r=await sb.from("site_theme").select("key,value").eq("key","stay");
+  if(r.error)toast("Could not load Stay & Eat: "+r.error.message,"no");
+  const v=((r.data||[])[0]||{}).value||{};STY={props:(v.props||[]).filter(x=>x&&x.id),venues:(v.venues||[]).filter(x=>x&&x.id)};buildSTY()}
+function buildSTY(){
+  [["props","#stprops","#stpc"],["venues","#stvenues","#stvc"]].forEach(([k,sel,cnt])=>{const L=$(sel);L.replaceChildren();
+    $(cnt).textContent=STY[k].filter(x=>!x._new).length+" saved";
+    if(!STY[k].length)L.innerHTML='<p class="mut">Nothing yet. Press the + button above.</p>';
+    STY[k].forEach(p=>L.append(stCard(k,p)))})}
+$("#stadd").onclick=()=>{if(!STY.props.some(x=>x._new))STY.props.push({id:uid(),title:"",show:true,status:"open",cur:"LKR",cats:[],rooms:[],imgs:[],_new:true});buildSTY();const d=$("#stprops details:last-child");if(d){d.open=true;d.scrollIntoView({block:"center"})}};
+$("#stvadd").onclick=()=>{if(!STY.venues.some(x=>x._new))STY.venues.push({id:uid(),title:"",show:true,status:"open",cur:"LKR",cats:[],imgs:[],_new:true});buildSTY();const d=$("#stvenues details:last-child");if(d){d.open=true;d.scrollIntoView({block:"center"})}};
+function roomRow(r){r=r||{};const d=document.createElement("div");d.className="box sp-sub";d.dataset.id=r.id||uid();
+  d.innerHTML=`<div class="sh-two">${spIn("m-n","Room name",r.name,"e.g. Deluxe ocean-view room")}${spIn("m-b","Beds",r.beds,"e.g. 1 king bed")}</div>
+  <div class="sh-two"><label>Price per night<input type="number" class="m-p" min="0" step="0.01" value="${r.price||""}" placeholder="e.g. 18000"></label><label>Sleeps (guests)<input type="number" class="m-s" min="1" max="30" value="${r.sleeps||2}"></label></div>
+  ${spTx("m-d","Description",r.desc,"View, size, air-conditioning...",500)}<div class="row"><button type="button" class="ghost m-rm">Remove room</button></div>`;
+  $(".m-rm",d).onclick=()=>d.remove();return d}
+function stCard(kind,p){
+  const stay=kind==="props",c=p.contact||{},pl=p.policy||{},d=document.createElement("details");d.className="grp";d.open=openST.has(p.id)||!!p._new;d.ontoggle=()=>d.open?openST.add(p.id):openST.delete(p.id);
+  const urls=(p.imgs||[]).slice(0,6);while(urls.length<6)urls.push(null);const stage=Array(6).fill(null);
+  d.innerHTML=`<summary><span>${esc(p.title||(stay?"New property (not saved yet)":"New venue (not saved yet)"))}</span><small>${p.show===false?"Hidden · ":""}${p.verified?"Verified · ":""}${stay?(p.rooms||[]).length+" rooms":esc(p.cuisine||"")}</small></summary><div class="sh-b">
+  <h2 class="sec">Basics</h2>${spIn("f-t",stay?"Property name":"Venue name",p.title,stay?"e.g. Blue Bay Villa":"e.g. Kaluwa Beach Café")}
+  <label>Categories</label>${spChk("f-c",stay?ST_CATS:FD_CATS,p.cats)}
+  <div class="sh-two">${spIn("f-l","Location",p.loc,"e.g. Hiriketiya Beach, Dikwella")}${spIn("f-m","Google Maps link",p.map,"https://maps.google.com/...")}</div>
+  <div class="sh-two"><label>Status<select class="f-st">${spSel(p.status||"open",ST_STAT)}</select></label><label>Currency<select class="f-cu"><option${(p.cur||"LKR")==="LKR"?" selected":""}>LKR</option><option${p.cur==="USD"?" selected":""}>USD</option><option${p.cur==="EUR"?" selected":""}>EUR</option></select></label></div>
+  <label class="sh-cb"><input type="checkbox" class="f-vf"${p.verified?" checked":""}> Verified Partner (tick only after you have approved this business and checked its details)</label>
+  <label class="sh-cb"><input type="checkbox" class="f-v"${p.show===false?"":" checked"}> Show on the website</label>
+  ${spTx("f-d","Description",p.desc,"A few honest, specific sentences",3000)}${spTx("f-h","Highlights (one per line)",spl(p.highlights),stay?"Steps from the surf break\nBreakfast on the terrace":"Fresh catch daily\nSunset tables")}
+  ${stay?`<h2 class="sec">Stay details</h2>${spTx("f-fa","Facilities (one per line)",spl(p.facilities),"Wi-Fi\nAir conditioning\nPool\nBreakfast included")}
+  <div class="sh-two">${spIn("f-cap","Maximum guests",p.cap,"e.g. 8")}${spIn("f-ci","Check-in time",p.cin,"e.g. From 2 pm")}</div>${spIn("f-co","Check-out time",p.cout,"e.g. By 11 am")}
+  <h2 class="sec">Rooms and nightly prices</h2><div class="st-rooms"></div><div class="row"><button type="button" class="ghost st-addroom">+ Add room</button></div>
+  <h2 class="sec">Policies</h2>${spTx("p-ca","Cancellation policy",pl.cancel,"e.g. Free up to 7 days before arrival",500)}<div class="sh-two">${spIn("p-ch","Children",pl.children,"")}${spIn("p-pe","Pets",pl.pets,"")}</div>${spTx("p-ru","House rules",pl.rules,"",500)}`
+  :`<h2 class="sec">Venue details</h2><div class="sh-two">${spIn("v-cu","Cuisine type",p.cuisine,"e.g. Sri Lankan, seafood")}${spIn("v-pr","Price range",p.range,"e.g. LKR 2,500 – 6,000 per person")}</div>
+  ${spIn("v-ho","Opening hours",p.hours,"e.g. Daily 8 am – 10 pm")}${spIn("v-me","Menu link (optional)",p.menu,"https://...")}
+  <h2 class="sec">Table reservations</h2>${spTx("v-sl","Reservation times shown in the form (one per line)",spl(p.slots),"08:00\n12:30\n19:00",500)}
+  <div class="sh-two">${spIn("v-mp","Largest group",p.maxparty,"e.g. 12")}${spIn("v-no","Reserve ahead",p.notice,"e.g. Groups of 6+ please book a day before")}</div>`}
+  <h2 class="sec">Contact (shown to guests)</h2><div class="sh-two">${spIn("c-wa","WhatsApp (digits, country code)",c.wa,"94717505506")}${spIn("c-ph","Phone",c.phone,"+94 ...")}</div>${spIn("c-em","Email",c.email,"")}
+  <h2 class="sec">Photos</h2><p class="mut">Use real photos of this business. The first is the main photo. Empty means a plain tinted card, never a stock photo.</p><div class="sh-imgs st-imgs"></div>
+  <div class="row"><button type="button" class="save">Save</button><button type="button" class="ghost up" aria-label="Move up">↑</button><button type="button" class="ghost dn" aria-label="Move down">↓</button><button type="button" class="ghost rm">Delete</button></div><div class="st" role="status"></div></div>`;
+  if(stay)(p.rooms||[]).forEach(r=>$(".st-rooms",d).append(roomRow(r)));
+  if(stay)$(".st-addroom",d).onclick=()=>$(".st-rooms",d).append(roomRow());
+  const st=$(".st",d),msg=(t,k)=>{st.textContent=t;st.className="st "+(k||"")};
+  const draw=()=>{const box=$(".st-imgs",d);box.replaceChildren();urls.forEach((_,k)=>{const w=document.createElement("div");w.className="sh-pi";const src=stage[k]?stage[k].url:urls[k];
+    w.innerHTML=`<div class="sh-pv">${src?`<img src="${esc(src)}" alt="">`:"No photo"}</div><input type="file" accept="image/*" aria-label="Photo ${k+1}"><button type="button" class="ghost"${src?"":" disabled"}>Remove</button>`;
+    $("input",w).onchange=async e=>{const f=e.target.files[0];if(!f)return;msg("Preparing image...");try{const blob=await toWebp(f,1800);stage[k]={blob,url:URL.createObjectURL(blob)};draw();msg("")}catch(x){msg("Could not read that image.","no")}};
+    $("button",w).onclick=()=>{stage[k]=null;urls[k]=null;draw()};box.append(w)})};draw();
+  const val=c=>$(c,d).value.trim(),ln=c=>val(c).split(/\r?\n/).map(x=>x.trim()).filter(Boolean),chk=c=>$$(c+":checked",d).map(x=>x.value);
+  $(".save",d).onclick=async e=>{const bt=e.target,title=val(".f-t");if(!title){msg("Enter the name.","no");return}
+    const wa=val(".c-wa").replace(/\D/g,"");if(wa&&wa.length<9){msg("WhatsApp needs the country code (digits only), or leave it empty.","no");return}
+    const mp=val(".f-m");if(mp&&!/^https?:\/\//i.test(mp)){msg("The map link must start with https://","no");return}
+    let extra;
+    if(stay){const rooms=$$(".st-rooms .sp-sub",d).map(x=>({id:x.dataset.id,name:$(".m-n",x).value.trim(),beds:$(".m-b",x).value.trim(),price:Math.max(0,parseFloat($(".m-p",x).value)||0),sleeps:Math.max(1,parseInt($(".m-s",x).value,10)||2),desc:$(".m-d",x).value.trim()})).filter(r=>r.name);
+      extra={facilities:ln(".f-fa"),cap:val(".f-cap"),cin:val(".f-ci"),cout:val(".f-co"),rooms,policy:{cancel:val(".p-ca"),children:val(".p-ch"),pets:val(".p-pe"),rules:val(".p-ru")}}}
+    else{const mu=val(".v-me");if(mu&&!/^https?:\/\//i.test(mu)){msg("The menu link must start with https://","no");return}
+      extra={cuisine:val(".v-cu"),range:val(".v-pr"),hours:val(".v-ho"),menu:mu,slots:ln(".v-sl"),maxparty:val(".v-mp"),notice:val(".v-no")}}
+    bt.disabled=true;msg("Saving...");
+    try{const out=[];for(let k=0;k<6;k++){let u=urls[k];if(stage[k]){const path=`stay-${p.id}-${Date.now()}-${k}.webp`;const up=await sb.storage.from(BUCKET).upload(path,stage[k].blob,{contentType:"image/webp",cacheControl:"31536000"});if(up.error)throw up.error;u=sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl}if(u)out.push(u)}
+      Object.assign(p,extra,{title,cats:chk(".f-c"),loc:val(".f-l"),map:mp,status:$(".f-st",d).value,cur:$(".f-cu",d).value,verified:$(".f-vf",d).checked,show:$(".f-v",d).checked,desc:val(".f-d"),highlights:ln(".f-h"),
+        contact:{wa,phone:val(".c-ph"),email:val(".c-em")},imgs:out});delete p._new;
+      const r=await saveSTY();if(r.error)throw r.error;openST.add(p.id);buildSTY();toast("Saved. The live Stay & Eat page now shows it.","ok");$("#reload").click()
+    }catch(x){msg("Save failed: "+(x.message||"unknown error")+". Make sure you are signed in as the admin email.","no");bt.disabled=false}};
+  const mv=async dir=>{const A=STY[kind],i=A.indexOf(p),j=i+dir;if(j<0||j>=A.length)return;[A[i],A[j]]=[A[j],A[i]];openST.add(p.id);const r=await saveSTY();if(r.error)toast("Could not save the order: "+r.error.message,"no");buildSTY();$("#reload").click()};
+  $(".up",d).onclick=()=>mv(-1);$(".dn",d).onclick=()=>mv(1);
+  $(".rm",d).onclick=async()=>{if(!confirm(p._new?"Discard this new entry?":"Delete this from the website?"))return;STY[kind]=STY[kind].filter(x=>x!==p);
+    if(!p._new){const r=await saveSTY();if(r.error){toast("Delete failed: "+r.error.message,"no");await loadSTY();return}toast("Deleted.","ok");$("#reload").click()}buildSTY()};
   return d}
 
 </script>
