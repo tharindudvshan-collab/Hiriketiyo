@@ -1087,3 +1087,23 @@ dialog#sed .se-x{position:sticky;top:0;grid-column:2;grid-row:1;justify-self:end
 @media(max-width:1100px){.se-row{grid-template-columns:repeat(2,minmax(0,1fr))}.se-row .se-w,.se-row .btn{grid-column:1/-1}}
 @media(max-width:820px){dialog#sed[open]{grid-template-columns:1fr}.se-gal,.se-dt,dialog#sed .se-x{grid-column:1;grid-row:auto}.se-dt{padding-right:0}dialog#sed .se-x{margin:0 0 -2.6rem}.se-g2{grid-template-columns:1fr}.se-room{flex-direction:column}.se-rp{align-items:flex-start;text-align:left}}
 @media(prefers-reduced-motion:reduce){.se-card{transition:none}}
+
+/* ===== One hero + one look for every page (same as Discover) ===== */
+.dhero h1{color:#fff;font-size:clamp(2.6rem,8vw,4.6rem);text-shadow:0 4px 28px #0007;margin-bottom:.25em}
+.dhero.xhero{min-height:clamp(400px,64vh,580px);padding-bottom:6rem}
+.xhero h2{font-size:clamp(2.6rem,8vw,4.6rem);line-height:1.2}
+.xhero p{font-size:1.05rem;max-width:52ch}
+.dhero>img:not([src]){display:none}
+/* Stay & Eat: search card floats under the hero; cards use the Discover place-card look */
+.se-search{position:relative;z-index:3;width:calc(100% - 2.5rem);max-width:1100px;margin:-2.4rem auto 0}
+.se-hd{justify-content:center;text-align:center}.se-hd h2{width:100%}.se-chips{justify-content:center}
+.se-card{border-radius:18px;box-shadow:0 16px 34px -22px #04303d88;transition:transform .4s cubic-bezier(.22,1,.36,1),box-shadow .4s}
+.se-card:hover{transform:translateY(-6px);box-shadow:0 26px 44px -22px #04303d99}
+.se-ph{aspect-ratio:4/3;background:linear-gradient(145deg,#0b2e33,#087F83 70%,#2bb3b7)}
+.se-ph img{transition:transform .9s cubic-bezier(.22,1,.36,1)}.se-card:hover .se-ph img{transform:scale(1.07)}
+.se-bd{padding:1.3rem 1.3rem 1.4rem}.se-bd h3{font:400 1.5rem var(--script);color:var(--ink)}
+.se-sec.alt{background:var(--sand)}
+/* Surf Partners cards follow the same card look */
+.sf-card{border-radius:18px;box-shadow:0 16px 34px -22px #04303d88;transition:transform .4s cubic-bezier(.22,1,.36,1),box-shadow .4s}.sf-card:hover{transform:translateY(-4px);box-shadow:0 26px 44px -22px #04303d99}
+.sf-ph{background:linear-gradient(145deg,#0b2e33,#087F83 70%,#2bb3b7)}.sf-hd h3{font:400 1.5rem var(--script)}
+@media(prefers-reduced-motion:reduce){.se-card,.sf-card,.se-ph img{transition:none}.se-card:hover,.sf-card:hover{transform:none}}

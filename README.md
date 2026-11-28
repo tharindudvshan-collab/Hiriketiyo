@@ -128,3 +128,9 @@ hiriketiyo/
 - **Fees:** customer service fee = `platform_settings.customer_fee_bps` (default 2%), shown before payment. **Partner commission (8% of the listed price)** is not shown to customers; it is computed only server-side for a PAID booking, once (`commission_ledger.booking_id` is the primary key). Rules and tables: `supabase-stay-bookings.sql` (review and run it yourself). Put the 8% in the partner agreement and partner dashboard.
 - Other pages are unchanged. Styles: `.se-*`, `#sed`, `#seb` at the end of `style.css`.
 - Upload together: `index.html`, `style.css`, `stay.js`, `admin.html`, `sw.js` (VERSION `hiriketiyo-v49`, `stay.js` in `CORE`).
+
+## Same hero and look on every page
+- Every page now opens with the Discover hero (`.ph.dhero`: full-width photo, ocean shade, wave edge, `clamp(400px,64vh,580px)` tall): Discover, Experiences, DO HIRIKETIYO, Plan Your Trip, Stay & Eat, Transport, Shopping, Explore Services, Surf Partners. Home keeps its own hero.
+- Banner photos (Admin > Photos): `stay-hero`, `trip-hero`, `transport-hero`, `shop-hero`, `services-hero`, `sp-hero` (plus `disc-hero`, `exp-hero`, `do-hero`). Until a photo is uploaded the Bay photo (`hero-1920.webp`) is used.
+- Stay & Eat and Surf Partners cards use the Discover place-card look (18px corners, 4:3 photo, script title, lift on hover). The Stay search card floats under the hero.
+- Upload together: `index.html`, `style.css`, `admin.html`, `sw.js` (VERSION `hiriketiyo-v50`).
