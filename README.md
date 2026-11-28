@@ -106,3 +106,11 @@ hiriketiyo/
 - **Product line strip**: slow, endlessly running band in the middle of whichever page is open. It shows only real, visible products (your Admin Studio products and partner products). With none, it is hidden. Not shown on the Shopping page itself. Clicking a product opens its detail dialog. About 38px per second; pauses on hover / focus / off screen; reduced motion gets a calm swipeable row.
 - Styles: `.pline` / `.pl-*` and the `.shop-*` / `.sp*` / `#pd` / `.pd-*` blocks at the end of `style.css`.
 - Upload together: `index.html`, `style.css`, `data.js`, `shop.js`, `productline.js`, `admin.html`, `sw.js` (VERSION `hiriketiyo-v45`, `shop.js` in `CORE`).
+
+## Surf Partners page (`#surfpartners`, `surfpartners.js`)
+- Own page for surf schools and instructors (the "gig list"). Opened by: Discover > "Browse surf partners", the home service catalog "Browse surf schools", the home "Surf lessons" link and Explore Services > "Surf Lessons". The top bar highlights "02 Experiences". (`app.js`: `P`, `AL`, chip link.)
+- **Admin Studio > Surf partners**: add / edit / delete / reorder partners. Per partner: name, tagline, status, badge, location + map link, description, experience, languages, certifications, team, safety, skill levels, lesson types, group size, minimum age, equipment / included / not included / what to bring, **packages** (name, type, level, duration, price, per person / group / session, included), **ratings and reviews** (manual rating or real reviews, average is calculated), **booking details** (how it works, hours, book-ahead, time slots, deposit, cancellation, payment methods, notes, WhatsApp, phone, email), logo and 5 photos. "Save surf partner" goes live straight away.
+- Stored in Supabase `site_theme`, key `surfpartners` (no new table). The public read policy must allow this key (same as `shop`, `payment`, `content`).
+- Customers open a partner: About / Packages / Reviews / Book. The booking is a **request** (`submit_enquiry('booking_request', {kind:'surf_lesson',...})`, status `pending_provider_confirmation`), with a WhatsApp fallback. Payment is not connected.
+- Styles: `.sf-*` and `#sfd` at the end of `style.css`.
+- Upload together: `index.html`, `style.css`, `app.js`, `surfpartners.js`, `admin.html`, `sw.js` (VERSION `hiriketiyo-v46`).

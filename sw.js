@@ -9,6 +9,7 @@ const CORE=[
  "content-map.js",
  "data.js",
  "do.js",
+ "surfpartners.js",
  "slideshow.js",
  "trip.js",
  "shop.js",

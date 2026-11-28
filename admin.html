@@ -158,6 +158,9 @@ input[type=number]{width:100%;padding:9px 11px;border:1px solid var(--line);bord
 .sh-pm{margin-bottom:12px}.sh-pm label{display:block;margin:8px 0 4px;font-size:.88rem}
 #shoplist details.grp summary{display:flex;justify-content:space-between;gap:8px;padding:11px 12px;cursor:pointer}
 #shoplist details.grp summary small{color:var(--mut);white-space:nowrap}
+#splist details.grp summary{display:flex;justify-content:space-between;gap:8px;padding:11px 12px;cursor:pointer}#splist details.grp summary small{color:var(--mut);text-align:right}
+#splist .sec{font-size:.98rem;margin:20px 0 6px;padding-top:12px;border-top:1px solid var(--line)}#splist .sec:first-child{border-top:0;margin-top:4px}
+.sp-sub{margin:8px 0;padding:11px}.sp-sub .row{margin-top:8px}
 </style>
 </head>
 <body>
@@ -191,6 +194,7 @@ input[type=number]{width:100%;padding:9px 11px;border:1px solid var(--line);bord
       <div class="tabs" role="tablist" aria-label="Editor sections">
         <button type="button" role="tab" data-t="content" aria-selected="true">Text &amp; links</button>
         <button type="button" role="tab" data-t="photos" aria-selected="false">Photos</button>
+        <button type="button" role="tab" data-t="surfp" aria-selected="false">Surf partners</button>
         <button type="button" role="tab" data-t="shop" aria-selected="false">Products</button>
         <button type="button" role="tab" data-t="pay" aria-selected="false">Payment</button>
         <button type="button" role="tab" data-t="logo" aria-selected="false">Logo</button>
@@ -221,6 +225,12 @@ input[type=number]{width:100%;padding:9px 11px;border:1px solid var(--line);bord
           <div class="presets" id="presets"></div>
           <div class="cols" id="tcols"></div>
           <div class="presets" style="margin-top:14px"><button type="button" class="ghost" id="treset">Back to the original design</button></div>
+        </div>
+
+        <div class="panel" id="p-surfp">
+          <div class="help"><b>Surf partners (the Surf Partners page).</b> Add each surf school or instructor: description, lesson levels, packages and prices, guest reviews and ratings, booking and payment details, contact and photos. Press <b>Save surf partner</b> and it goes live straight away (no need to press Publish). Everything you leave empty is simply hidden on the website.</div>
+          <div class="sh-top"><button type="button" id="spadd">+ Add surf partner</button><span class="mut" id="spcount"></span></div>
+          <div id="splist"></div>
         </div>
 
         <div class="panel" id="p-shop">
@@ -374,7 +384,7 @@ async function loadDefaults(){
 async function boot(){
   pv.src="index.html?hkpreview=1#"+$("#pgsel").value;
   await loadDefaults();
-  build();buildTheme();buildContent();fit();loadShop();
+  build();buildTheme();buildContent();fit();loadShop();loadSP();
   const [im,tr]=await Promise.all([sb.from("site_images").select("*"),sb.from("site_theme").select("key,value").in("key",["theme","content"])]);
   if(im.error)toast("Could not load images: "+im.error.message+". Run the Supabase SQL (site_images table) first.","no");
   rows=Object.fromEntries((im.data||[]).map(r=>[r.slot,r]));build();
@@ -723,6 +733,104 @@ function buildPay(){
     const v={wa,info:$("#pay-info").value.trim(),methods},r=await saveKey("payment",v);b.disabled=false;
     if(r.error){st.textContent="Save failed: "+r.error.message+". Make sure you are signed in as the admin email.";st.className="st no";return}
     PAY=v;st.textContent="Saved. The Shopping page now shows these options.";st.className="st ok";$("#reload").click()}}
+/* ---------------- SURF PARTNERS (saved in site_theme, key "surfpartners") ---------------- */
+const SP_LV=["Beginner","Intermediate","Advanced","Kids","Women only","Groups"];
+const SP_TY=["Group lesson","Private lesson","Semi-private","Coaching","Board rental","Camp / multi-day"];
+const SP_PAY=["Cash on the day","Bank transfer","Card or online (when available)","Pay after confirmation"];
+const SP_ST=[["open","Open for bookings"],["limited","Limited spots"],["full","Fully booked"],["closed","Closed for the season"]];
+const SP_UNIT=[["person","per person"],["group","per group"],["session","per session"],["day","per day"],["hour","per hour"]];
+let SPD={items:[]};const openSP=new Set();
+const saveSP=()=>saveKey("surfpartners",{items:SPD.items.filter(x=>!x._new).map(x=>{const{_new,...r}=x;return r})});
+async function loadSP(){
+  const r=await sb.from("site_theme").select("key,value").eq("key","surfpartners");
+  if(r.error)toast("Could not load surf partners: "+r.error.message,"no");
+  const v=((r.data||[])[0]||{}).value;SPD={items:Array.isArray(v&&v.items)?v.items.filter(x=>x&&x.id):[]};buildSP()}
+function buildSP(){
+  const L=$("#splist");L.replaceChildren();$("#spcount").textContent=SPD.items.filter(x=>!x._new).length+" saved";
+  if(!SPD.items.length)L.innerHTML='<p class="mut">No surf partners yet. Press <b>+ Add surf partner</b>.</p>';
+  SPD.items.forEach(p=>L.append(spCard(p)))}
+$("#spadd").onclick=()=>{if(!SPD.items.some(x=>x._new))SPD.items.push({id:uid(),title:"",show:true,status:"open",cur:"LKR",packages:[],reviews:[],imgs:[],levels:[],types:[],booking:{pay:[]},_new:true});buildSP();const d=$("#splist details:last-child");if(d){d.open=true;d.scrollIntoView({block:"center"})}};
+const spl=a=>(Array.isArray(a)?a:String(a||"").split(/\r?\n/)).join("\n");
+const spSel=(v,a)=>a.map(([k,l])=>`<option value="${k}"${k===v?" selected":""}>${esc(l)}</option>`).join("");
+const spChk=(cls,all,on)=>all.map(x=>`<label class="sh-cb"><input type="checkbox" class="${cls}" value="${esc(x)}"${(on||[]).includes(x)?" checked":""}> ${esc(x)}</label>`).join("");
+const spTx=(c,l,v,ph,max)=>`<label>${l}<textarea class="${c}" maxlength="${max||1500}" placeholder="${esc(ph||"")}">${esc(v||"")}</textarea></label>`;
+const spIn=(c,l,v,ph,t)=>`<label>${l}<input type="${t||"text"}" class="${c}" maxlength="200" value="${esc(v==null?"":v)}" placeholder="${esc(ph||"")}"></label>`;
+function pkRow(k){k=k||{};const d=document.createElement("div");d.className="box sp-sub";d.dataset.id=k.id||uid();
+  d.innerHTML=`<div class="sh-two">${spIn("k-n","Package name",k.name,"e.g. 2-hour beginner group lesson")}<label>Lesson type<select class="k-t"><option value=""></option>${SP_TY.map(x=>`<option${x===k.type?" selected":""}>${x}</option>`).join("")}</select></label></div>
+  <div class="sh-two"><label>Skill level<select class="k-l"><option value=""></option>${SP_LV.map(x=>`<option${x===k.level?" selected":""}>${x}</option>`).join("")}</select></label>${spIn("k-d","Duration",k.duration,"e.g. 2 hours")}</div>
+  <div class="sh-two"><label>Price<input type="number" class="k-p" min="0" step="0.01" value="${k.price||""}" placeholder="e.g. 6500"></label><label>Price is<select class="k-u">${spSel(k.unit||"person",SP_UNIT)}</select></label></div>
+  ${spIn("k-g","Group size",k.group,"e.g. up to 6 guests")}${spTx("k-s","Description",k.desc,"What happens in this package",600)}${spTx("k-i","What is included (one per line)",spl(k.inc),"Board\nRash vest\nPhotos",600)}
+  <div class="row"><button type="button" class="ghost k-rm">Remove package</button></div>`;
+  $(".k-rm",d).onclick=()=>d.remove();return d}
+function rvRow(r){r=r||{};const d=document.createElement("div");d.className="box sp-sub";
+  d.innerHTML=`<div class="sh-two">${spIn("r-n","Guest name",r.name)}${spIn("r-c","Country",r.country)}</div>
+  <div class="sh-two"><label>Rating (1 to 5)<input type="number" class="r-r" min="1" max="5" step="0.5" value="${r.rating||5}"></label>${spIn("r-d","Date",r.date,"e.g. March 2026")}</div>
+  ${spTx("r-t","Review text",r.text,"What the guest said",800)}<label class="sh-cb"><input type="checkbox" class="r-v"${r.verified?" checked":""}> Show "Verified lesson" (only if you know this guest had the lesson)</label>
+  <div class="row"><button type="button" class="ghost r-rm">Remove review</button></div>`;
+  $(".r-rm",d).onclick=()=>d.remove();return d}
+function spCard(p){
+  const b=p.booking||{},d=document.createElement("details");d.className="grp";d.open=openSP.has(p.id)||!!p._new;d.ontoggle=()=>d.open?openSP.add(p.id):openSP.delete(p.id);
+  const urls=(p.imgs||[]).slice(0,5);while(urls.length<5)urls.push(null);const stage=Array(5).fill(null);let logo=p.logo||null,logoStage=null;
+  d.innerHTML=`<summary><span>${esc(p.title||"New surf partner (not saved yet)")}</span><small>${p.show===false?"Hidden · ":""}${p.feat?"Featured · ":""}${(p.packages||[]).length} pkg · ${(p.reviews||[]).length} rev</small></summary><div class="sh-b">
+  <h2 class="sec">Basics</h2>
+  ${spIn("f-t","Partner or school name",p.title,"e.g. Blue Bay Surf School")}${spIn("f-tag","Short tagline",p.tag,"One line shown on the card")}
+  <div class="sh-two"><label>Booking status<select class="f-st">${spSel(p.status||"open",SP_ST)}</select></label>${spIn("f-bd","Badge (optional)",p.badge,"e.g. Local family run")}</div>
+  <div class="sh-two">${spIn("f-loc","Location",p.loc,"e.g. Hiriketiya Beach, Dikwella")}${spIn("f-map","Google Maps link",p.map,"https://maps.google.com/...")}</div>
+  <label class="sh-cb"><input type="checkbox" class="f-v"${p.show===false?"":" checked"}> Show on the website</label><label class="sh-cb"><input type="checkbox" class="f-f"${p.feat?" checked":""}> Featured (shown first, gold border)</label>
+  <h2 class="sec">About</h2>${spTx("f-d","Description",p.desc,"Who you are, your teaching style, your story",3000)}
+  <div class="sh-two">${spIn("f-y","Experience",p.years,"e.g. 12 years teaching")}${spIn("f-lg","Languages",p.langs,"e.g. English, Sinhala, German")}</div>
+  ${spIn("f-ce","Certifications",p.certs,"e.g. ISA Level 1, First Aid")}${spTx("f-tm","Instructors / team",p.team,"Names and short bios",800)}${spTx("f-sf","Safety information",p.safety,"Lifeguards, rip-current briefing, insurance...",800)}
+  <h2 class="sec">Lessons</h2><label>Skill levels taught</label>${spChk("f-lv",SP_LV,p.levels)}<label>Lesson types</label>${spChk("f-ty",SP_TY,p.types)}
+  <div class="sh-two">${spIn("f-gm","Maximum group size",p.gmax,"e.g. 8")}${spIn("f-ma","Minimum age",p.minage,"e.g. 6")}</div>
+  ${spTx("f-eq","Equipment provided (one per line)",spl(p.equip),"Soft-top board\nRash vest\nLeash")}${spTx("f-in","Included (one per line)",spl(p.inc),"Theory briefing\nVideo review")}
+  ${spTx("f-ex","Not included (one per line)",spl(p.exc),"Transport\nMeals")}${spTx("f-br","What to bring (one per line)",spl(p.bring),"Sunscreen\nTowel\nSwimwear")}
+  <h2 class="sec">Packages and prices</h2><label>Currency<select class="f-cu"><option${(p.cur||"LKR")==="LKR"?" selected":""}>LKR</option><option${p.cur==="USD"?" selected":""}>USD</option><option${p.cur==="EUR"?" selected":""}>EUR</option></select></label>
+  <div class="sp-pk"></div><div class="row"><button type="button" class="ghost sp-addpk">+ Add package</button></div>
+  <h2 class="sec">Customer ratings and reviews</h2><p class="mut">When you add reviews the website shows their average. With no reviews, the manual rating below is used. Only add real guest feedback.</p>
+  <div class="sh-two"><label>Manual rating (0 to 5)<input type="number" class="f-ra" min="0" max="5" step="0.1" value="${p.rating||""}"></label><label>Manual number of reviews<input type="number" class="f-rc" min="0" step="1" value="${p.rcount||""}"></label></div>
+  <div class="sp-rv"></div><div class="row"><button type="button" class="ghost sp-addrv">+ Add review</button></div>
+  <h2 class="sec">Booking and payment details</h2>
+  ${spTx("b-how","How booking works",b.how,"e.g. Send a request. We reply within 24 hours to confirm.",800)}
+  <div class="sh-two">${spIn("b-hr","Lesson hours and days",b.hours,"e.g. Daily 7am to 5pm")}${spIn("b-no","Book ahead",b.notice,"e.g. At least 12 hours before")}</div>
+  ${spTx("b-sl","Time slots shown in the booking form (one per line)",spl(b.slots),"07:00 Morning\n10:00 Late morning\n15:30 Afternoon",500)}
+  <div class="sh-two">${spIn("b-dp","Deposit",b.deposit,"e.g. 20% to confirm")}${spIn("b-ca","Cancellation policy",b.cancel,"e.g. Free up to 24 hours before")}</div>
+  <label>Payment methods accepted</label>${spChk("b-pay",SP_PAY,b.pay)}${spTx("b-pn","Payment notes",b.paynote,"Bank details instructions, refund notes...",600)}
+  <div class="sh-two">${spIn("b-wa","WhatsApp number (digits, with country code)",b.wa,"94717505506")}${spIn("b-ph","Public phone",b.phone,"+94 ...")}</div>${spIn("b-em","Public email",b.email,"")}
+  <h2 class="sec">Photos</h2><label>Logo</label><div class="sh-imgs sp-logo"></div><label>Photos (the first is the main photo)</label><div class="sh-imgs sp-imgs"></div>
+  <div class="row"><button type="button" class="save">Save surf partner</button><button type="button" class="ghost up" aria-label="Move up">↑</button><button type="button" class="ghost dn" aria-label="Move down">↓</button><button type="button" class="ghost rm">Delete</button></div><div class="st" role="status"></div></div>`;
+  const st=$(".st",d),msg=(t,c)=>{st.textContent=t;st.className="st "+(c||"")};
+  (p.packages||[]).forEach(k=>$(".sp-pk",d).append(pkRow(k)));(p.reviews||[]).forEach(r=>$(".sp-rv",d).append(rvRow(r)));
+  $(".sp-addpk",d).onclick=()=>$(".sp-pk",d).append(pkRow());$(".sp-addrv",d).onclick=()=>$(".sp-rv",d).append(rvRow());
+  const pic=(box,get,set,remove,label)=>{box.replaceChildren();const w=document.createElement("div");w.className="sh-pi";const src=get();
+    w.innerHTML=`<div class="sh-pv">${src?`<img src="${esc(src)}" alt="">`:"No photo"}</div><input type="file" accept="image/*" aria-label="${label}"><button type="button" class="ghost"${src?"":" disabled"}>Remove</button>`;
+    $("input",w).onchange=async e=>{const f=e.target.files[0];if(!f)return;msg("Preparing image...");try{const blob=await toWebp(f,1600);set({blob,url:URL.createObjectURL(blob)});pic(box,get,set,remove,label);msg("")}catch(x){msg("Could not read that image.","no")}};
+    $("button",w).onclick=()=>{remove();pic(box,get,set,remove,label)};box.append(w)};
+  const drawLogo=()=>pic($(".sp-logo",d),()=>logoStage?logoStage.url:logo,v=>{logoStage=v},()=>{logoStage=null;logo=null},"Logo");
+  const drawImgs=()=>{const box=$(".sp-imgs",d);box.replaceChildren();[0,1,2,3,4].forEach(k=>{const h=document.createElement("div");box.append(h);
+    pic(h,()=>stage[k]?stage[k].url:urls[k],v=>{stage[k]=v},()=>{stage[k]=null;urls[k]=null},"Photo "+(k+1))})};
+  drawLogo();drawImgs();
+  const val=c=>$(c,d).value.trim(),lines=c=>val(c).split(/\r?\n/).map(x=>x.trim()).filter(Boolean),chk=c=>$$(c+":checked",d).map(x=>x.value);
+  $(".save",d).onclick=async e=>{const bt=e.target;const title=val(".f-t");if(!title){msg("Enter the partner or school name.","no");return}
+    const pks=$$(".sp-pk .sp-sub",d).map(x=>({id:x.dataset.id,name:$(".k-n",x).value.trim(),type:$(".k-t",x).value,level:$(".k-l",x).value,duration:$(".k-d",x).value.trim(),price:Math.max(0,parseFloat($(".k-p",x).value)||0),
+      unit:$(".k-u",x).value,group:$(".k-g",x).value.trim(),desc:$(".k-s",x).value.trim(),inc:$(".k-i",x).value.split(/\r?\n/).map(z=>z.trim()).filter(Boolean)})).filter(k=>k.name);
+    const rvs=$$(".sp-rv .sp-sub",d).map(x=>({name:$(".r-n",x).value.trim(),country:$(".r-c",x).value.trim(),rating:Math.min(5,Math.max(1,parseFloat($(".r-r",x).value)||5)),date:$(".r-d",x).value.trim(),text:$(".r-t",x).value.trim(),verified:$(".r-v",x).checked})).filter(r=>r.text);
+    const wa=val(".b-wa").replace(/\D/g,"");if(wa&&wa.length<9){msg("WhatsApp number needs the country code (digits only), or leave it empty to use the site number.","no");return}
+    const mp=val(".f-map");if(mp&&!/^https?:\/\//i.test(mp)){msg("The map link must start with https://","no");return}
+    bt.disabled=true;msg("Saving...");
+    try{const out=[];for(let k=0;k<5;k++){let u=urls[k];if(stage[k]){const path=`surf-${p.id}-${Date.now()}-${k}.webp`;const up=await sb.storage.from(BUCKET).upload(path,stage[k].blob,{contentType:"image/webp",cacheControl:"31536000"});if(up.error)throw up.error;u=sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl}if(u)out.push(u)}
+      let lu=logo;if(logoStage){const path=`surf-${p.id}-${Date.now()}-logo.webp`;const up=await sb.storage.from(BUCKET).upload(path,logoStage.blob,{contentType:"image/webp",cacheControl:"31536000"});if(up.error)throw up.error;lu=sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl}
+      Object.assign(p,{title,tag:val(".f-tag"),status:$(".f-st",d).value,badge:val(".f-bd"),loc:val(".f-loc"),map:mp,show:$(".f-v",d).checked,feat:$(".f-f",d).checked,desc:val(".f-d"),years:val(".f-y"),langs:val(".f-lg"),certs:val(".f-ce"),team:val(".f-tm"),safety:val(".f-sf"),
+        levels:chk(".f-lv"),types:chk(".f-ty"),gmax:val(".f-gm"),minage:val(".f-ma"),equip:lines(".f-eq"),inc:lines(".f-in"),exc:lines(".f-ex"),bring:lines(".f-br"),cur:$(".f-cu",d).value,packages:pks,
+        rating:Math.min(5,Math.max(0,parseFloat($(".f-ra",d).value)||0)),rcount:Math.max(0,parseInt($(".f-rc",d).value,10)||0),reviews:rvs,
+        booking:{how:val(".b-how"),hours:val(".b-hr"),notice:val(".b-no"),slots:lines(".b-sl"),deposit:val(".b-dp"),cancel:val(".b-ca"),pay:chk(".b-pay"),paynote:val(".b-pn"),wa,phone:val(".b-ph"),email:val(".b-em")},imgs:out,logo:lu||""});
+      delete p._new;const r=await saveSP();if(r.error)throw r.error;openSP.add(p.id);buildSP();toast("Surf partner saved. The live Surf Partners page now shows it.","ok");$("#reload").click()
+    }catch(x){msg("Save failed: "+(x.message||"unknown error")+". Make sure you are signed in as the admin email.","no");bt.disabled=false}};
+  const mv=async dir=>{const i=SPD.items.indexOf(p),j=i+dir;if(j<0||j>=SPD.items.length)return;[SPD.items[i],SPD.items[j]]=[SPD.items[j],SPD.items[i]];openSP.add(p.id);const r=await saveSP();if(r.error)toast("Could not save the order: "+r.error.message,"no");buildSP();$("#reload").click()};
+  $(".up",d).onclick=()=>mv(-1);$(".dn",d).onclick=()=>mv(1);
+  $(".rm",d).onclick=async()=>{if(!confirm(p._new?"Discard this new partner?":"Delete this surf partner from the website?"))return;SPD.items=SPD.items.filter(x=>x!==p);
+    if(!p._new){const r=await saveSP();if(r.error){toast("Delete failed: "+r.error.message,"no");await loadSP();return}toast("Surf partner deleted.","ok");$("#reload").click()}buildSP()};
+  return d}
+
 </script>
 </body>
 </html>
