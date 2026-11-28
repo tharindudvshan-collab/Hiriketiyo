@@ -20,7 +20,7 @@ add(G0,{k:'seo.tc',l:'Phone browser bar color',s:'meta[name="theme-color"]',t:'a
 
 /* ---------- Top bar & menus ---------- */
 const G1='Top bar & menus';
-const NAV=[['discover','01 Discover'],['surf','02 Experiences'],['stay','03 Stay & Eat'],['destinations','04 Destinations'],['shop','05 Shopping'],['do','Explore Services'],['plan','06 Plan Your Trip']];
+const NAV=[['discover','01 Discover'],['surf','02 Experiences'],['stay','03 Stay & Eat'],['destinations','04 Destinations'],['shop','05 Shopping'],['services','Explore Services'],['plan','06 Plan Your Trip']];
 NAV.forEach(([h,l])=>{
   add(G1,{k:'nav.'+h,l:'Top bar: '+l,s:`.nl a[href="#${h}"] .rl i`});
   add(G1,{k:'nav.'+h+'.tip',l:'Top bar hover text: '+l,s:`#nt-${h} .tx`,t:'long'});
@@ -365,6 +365,12 @@ add(G13,{k:'ft.cta',l:'Footer button',s:'footer .fcta'});
 add(G13,{k:'ft.ctah',l:'Footer button: link',s:'footer .fcta',t:'attr',a:'href'});
 add(G13,{k:'ft.c',l:'Copyright line',s:'.fbar span'});
 add(G13,{k:'ft.top',l:'Back to top link',s:'.fbar a'});
+add(G13,{k:'ft.cr.l',l:'Website creator: label',s:'.fcredit .cl'});
+add(G13,{k:'ft.cr.n',l:'Website creator: name',s:'.fcredit b'});
+add(G13,{k:'ft.cr.p',l:'Website creator: phone shown',s:'.fcredit a:nth-of-type(1)'});
+add(G13,{k:'ft.cr.ph',l:'Website creator: phone link',s:'.fcredit a:nth-of-type(1)',t:'attr',a:'href'});
+add(G13,{k:'ft.cr.w',l:'Website creator: WhatsApp text',s:'.fcredit a:nth-of-type(2)'});
+add(G13,{k:'ft.cr.wh',l:'Website creator: WhatsApp link',s:'.fcredit a:nth-of-type(2)',t:'attr',a:'href'});
 add(G13,{k:'show.ft.work',l:'Show the "Work with us" column',s:'footer .ft>div:last-child',t:'show'});
 
 /* ---------- helpers ---------- */

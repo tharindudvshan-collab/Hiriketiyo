@@ -994,3 +994,10 @@ main{min-height:calc(100vh - var(--hh,120px));min-height:calc(100dvh - var(--hh,
 .sf-list{grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr))}
 .sf-main .in{width:100%}
 @media(min-width:1500px){.dgrid,.svc-grid{grid-template-columns:repeat(4,1fr)}}
+
+/* website creator credit in the footer bar */
+.fbar>span:first-child{order:1}.fbar>a:first-of-type{order:3}
+.fcredit{order:2;display:flex;flex-wrap:wrap;gap:.2rem .7rem;align-items:center}
+.fcredit b{color:#fff;font-weight:600}
+.fcredit a{display:inline;color:#cfe6e2;text-decoration:underline;text-underline-offset:3px;padding:0}.fcredit a:hover{color:#fff}
+@media(max-width:560px){.fbar>span:first-child,.fbar>a:first-of-type,.fcredit{order:0}}
